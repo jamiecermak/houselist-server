@@ -1,0 +1,18 @@
+{
+  "name": "houselist-server",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
+    "jest": "^27.4.5",
+    "knex": "^0.95.15",
+    "serverless-http": "^2.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.5.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.5.1",
+    "serverless-offline": "^8.3.1"
+  }
+}
