@@ -3,17 +3,17 @@ const mockDb = require('mock-knex')
 const tracker = mockDb.getTracker()
 const { AuthenticationLib } = require('../../lib/Authentication')
 
-describe('Authentication Lib', () => {
-    beforeEach(() => {
-        mockDb.mock(database)
-        tracker.install()
-    })
+beforeEach(() => {
+    mockDb.mock(database)
+    tracker.install()
+})
 
-    afterEach(() => {
-        tracker.uninstall()
-        mockDb.unmock(database)
-    })
+afterEach(() => {
+    tracker.uninstall()
+    mockDb.unmock(database)
+})
 
+describe('authenticateUser', () => {
     it('can authenticate a email address and password', () => {
         const emailAddress = 'test@example.com'
         const password = 'password'
@@ -101,7 +101,9 @@ describe('Authentication Lib', () => {
                 expect(validatePassword).toHaveBeenCalledTimes(0)
             })
     })
+})
 
+describe('hashPassword', () => {
     it('will generate a hash for a password', () => {
         const authentication = new AuthenticationLib()
         const password = 'password-to-hash'
@@ -111,10 +113,4 @@ describe('Authentication Lib', () => {
         expect(typeof result).toBe('string')
         expect(result).not.toEqual(password)
     })
-
-    it.todo('can signup')
-
-    it.todo('can generate a forgotten password token')
-
-    it.todo('can set a new password for a forgotten account')
 })
