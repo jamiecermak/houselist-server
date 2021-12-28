@@ -3,5 +3,8 @@
         "module": "commonjs",
         "target": "ES2020"
     },
+    "typeAcquisition": {
+        "include": ["jest"]
+    },
     "exclude": ["node_modules"]
 }
