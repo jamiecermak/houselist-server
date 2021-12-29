@@ -2,6 +2,8 @@ const { database } = require('../../util/Database')
 const { UsersLib } = require('../../lib/Users')
 const mockDb = require('mock-knex')
 const bcrypt = require('bcrypt')
+const sinon = require('sinon')
+const { UserProfileImagesLib } = require('../../lib/UserProfileImages')
 const tracker = mockDb.getTracker()
 
 beforeEach(() => {
@@ -208,8 +210,51 @@ describe('updateUsersName', () => {
     })
 })
 
-describe('Users Lib', () => {
-    it.todo('can save a profile image for a user')
+describe('changeUserProfileImage', () => {
+    it('will update a users profile image with a new uploaded one', () => {
+        expect.assertions(5)
 
+        const userId = 20
+        const s3Path = 'profile-images/test.jpg'
+        const testImageBuffer = Buffer.from('test-buffer')
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('update')
+            expect(query.bindings).toEqual([
+                'storage-s3-bucket',
+                'profile-images/test.jpg',
+                userId,
+            ])
+
+            query.response()
+        })
+
+        const uploadProfileImageToS3 = sinon
+            .stub(UserProfileImagesLib.prototype, 'uploadProfileImageToS3')
+            .resolves(s3Path)
+
+        sinon
+            .stub(UserProfileImagesLib.prototype, 'generateProfileImageName')
+            .returns(s3Path)
+
+        const users = new UsersLib()
+
+        return users
+            .changeUserProfileImage(userId, testImageBuffer)
+            .then((response) => {
+                expect(response).toEqual(s3Path)
+                expect(uploadProfileImageToS3.callCount).toEqual(1)
+                expect(
+                    uploadProfileImageToS3.calledWith(
+                        'storage-s3-bucket',
+                        s3Path,
+                        testImageBuffer,
+                    ),
+                )
+            })
+    })
+})
+
+describe('Users Lib', () => {
     it.todo('can generate a signed url link for a user')
 })
