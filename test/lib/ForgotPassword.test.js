@@ -1,16 +1,14 @@
 const { database } = require('./../../util/Database')
 const mockDb = require('mock-knex')
-const { ForgotPasswordLib } = require('../../lib/ForgotPassword')
+const sinon = require('sinon')
 const { UsersLib } = require('../../lib/Users')
+const { ForgotPasswordLib } = require('../../lib/ForgotPassword')
 const { sub, add } = require('date-fns')
 const tracker = mockDb.getTracker()
-
-jest.mock('../../lib/Users.js')
 
 beforeEach(() => {
     mockDb.mock(database)
     tracker.install()
-    UsersLib.mockClear()
 })
 
 afterEach(() => {
@@ -271,14 +269,20 @@ describe('verifyResetToken', () => {
 
 describe('resetPasswordWithToken', () => {
     it('will reset a valid password', () => {
+        const userId = 2
         const emailAddress = 'test@example.com'
         const resetToken = 'reset-token'
         const newPassword = 'new-password'
+
+        const setPassword = sinon
+            .stub(UsersLib.prototype, 'setPassword')
+            .callsFake(async () => {})
+
         const forgotPassword = new ForgotPasswordLib()
 
         jest.spyOn(forgotPassword, 'verifyResetToken').mockResolvedValue({
             id: 1,
-            User_id: 2,
+            User_id: userId,
         })
 
         jest.spyOn(forgotPassword, 'useResetToken').mockResolvedValue()
@@ -288,7 +292,11 @@ describe('resetPasswordWithToken', () => {
             .catch(() => {
                 throw new Error('Test Failed')
             })
-            .then(() => {})
+            .then(() => {
+                expect(setPassword.args).toEqual([[userId, newPassword]])
+
+                setPassword.restore()
+            })
     })
 
     it('will not reset an invalid password', () => {
