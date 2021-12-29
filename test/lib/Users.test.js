@@ -79,9 +79,55 @@ describe('setPassword', () => {
     })
 })
 
-describe('Users Lib', () => {
-    it.todo('can get information for a userid')
+describe('getActiveUserById', () => {
+    it('will get information for an active user by id', () => {
+        expect.assertions(6)
 
+        const userId = 20
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([
+                {
+                    id: userId,
+                    email_address: 'test@example.com',
+                    name: 'John Smith',
+                    username: 'johnsmith123',
+                },
+            ])
+        })
+
+        const users = new UsersLib()
+
+        return users.getActiveUserById(userId).then((user) => {
+            expect(typeof user).toEqual('object')
+            expect(user.emailAddress).toEqual('test@example.com')
+            expect(user.id).toEqual(userId)
+            expect(user.name).toEqual('John Smith')
+            expect(user.username).toEqual('johnsmith123')
+        })
+    })
+
+    it('will return null if no user is found', () => {
+        expect.assertions(3)
+
+        const userId = 20
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([])
+        })
+
+        const users = new UsersLib()
+
+        return users.getActiveUserById(userId).catch((ex) => {
+            expect(ex).toBeInstanceOf(Error)
+            expect(ex.message).toEqual('User ID 20 not found')
+        })
+    })
+})
+
+describe('Users Lib', () => {
     it.todo('can add a fcm token to a userid')
 
     it.todo('can update a user with a new name')
