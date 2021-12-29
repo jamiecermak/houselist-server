@@ -1,4 +1,4 @@
-const { database } = require('./../../util/Database')
+const { database } = require('../../util/Database')
 const mockDb = require('mock-knex')
 const tracker = mockDb.getTracker()
 const { AuthenticationLib } = require('../../lib/Authentication')

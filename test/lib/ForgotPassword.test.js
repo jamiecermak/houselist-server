@@ -1,4 +1,4 @@
-const { database } = require('./../../util/Database')
+const { database } = require('../../util/Database')
 const mockDb = require('mock-knex')
 const sinon = require('sinon')
 const { UsersLib } = require('../../lib/Users')

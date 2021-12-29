@@ -1,4 +1,4 @@
-const { database } = require('./../../util/Database')
+const { database } = require('../../util/Database')
 const { UsersLib } = require('../../lib/Users')
 const mockDb = require('mock-knex')
 const bcrypt = require('bcrypt')
@@ -209,10 +209,6 @@ describe('updateUsersName', () => {
 })
 
 describe('Users Lib', () => {
-    it.todo('can add a fcm token to a userid')
-
-    it.todo('can update a user with a new name')
-
     it.todo('can save a profile image for a user')
 
     it.todo('can generate a signed url link for a user')
