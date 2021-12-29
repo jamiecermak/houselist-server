@@ -1,5 +1,4 @@
 const { database } = require('./../../util/Database')
-const { AuthenticationLib } = require('../../lib/Authentication')
 const { UsersLib } = require('../../lib/Users')
 const mockDb = require('mock-knex')
 const bcrypt = require('bcrypt')
@@ -127,16 +126,92 @@ describe('getActiveUserById', () => {
     })
 })
 
+describe('updateUsersName', () => {
+    it('can update a users name', () => {
+        expect.assertions(4)
+
+        const userId = 20
+        const userNewName = 'Tim Apple'
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('update')
+            expect(query.sql).toEqual(
+                'update "users" set "name" = $1 where "id" = $2',
+            )
+            expect(query.bindings).toEqual(['Tim Apple', userId])
+
+            query.response()
+        })
+
+        const users = new UsersLib()
+
+        const getActiveUserById = jest
+            .spyOn(users, 'getActiveUserById')
+            .mockResolvedValue({
+                id: 20,
+                emailAddress: 'test@example.com',
+                name: 'John Smith',
+                username: 'johnsmith123',
+            })
+
+        return users.updateUsersName(userId, userNewName).then(() => {
+            expect(getActiveUserById.mock.calls[0][0]).toEqual(userId)
+        })
+    })
+
+    it('will not update a user if the name is the same', () => {
+        expect.assertions(2)
+
+        const userId = 20
+        const userNewName = 'John Smith'
+
+        const users = new UsersLib()
+
+        jest.spyOn(users, 'getActiveUserById').mockResolvedValue({
+            id: 20,
+            emailAddress: 'test@example.com',
+            name: 'John Smith',
+            username: 'johnsmith123',
+        })
+
+        return users.updateUsersName(userId, userNewName).catch((ex) => {
+            expect(ex).toBeInstanceOf(Error)
+            expect(ex.message).toEqual(
+                'Old name and new name must not be the same',
+            )
+        })
+    })
+
+    it('will throw an error if it can not update the user', () => {
+        expect.assertions(2)
+
+        const userId = 20
+        const userNewName = 'Tim Apple'
+
+        tracker.on('query', (query) => {
+            query.reject(new Error('test'))
+        })
+
+        const users = new UsersLib()
+
+        jest.spyOn(users, 'getActiveUserById').mockResolvedValue({
+            id: 20,
+            emailAddress: 'test@example.com',
+            name: 'John Smith',
+            username: 'johnsmith123',
+        })
+
+        return users.updateUsersName(userId, userNewName).catch((ex) => {
+            expect(ex).toBeInstanceOf(Error)
+            expect(ex.message).toEqual('Could not update name for User ID 20')
+        })
+    })
+})
+
 describe('Users Lib', () => {
     it.todo('can add a fcm token to a userid')
 
     it.todo('can update a user with a new name')
-
-    it.todo('can set the password for a user')
-
-    it.todo('check if a user exists')
-
-    it.todo('get the active status for a userid')
 
     it.todo('can save a profile image for a user')
 

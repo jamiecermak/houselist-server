@@ -1,6 +1,5 @@
 const { database } = require('./../../util/Database')
 const mockDb = require('mock-knex')
-const sinon = require('sinon')
 const tracker = mockDb.getTracker()
 const { AuthorisationLib } = require('../../lib/Authorisation')
 const jwt = require('jsonwebtoken')

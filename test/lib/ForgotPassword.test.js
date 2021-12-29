@@ -85,9 +85,7 @@ describe('generateResetTokenForUser', () => {
             () => '2011-10-05T14:48:00.000Z',
         )
 
-        const createTokenRecord = jest
-            .spyOn(forgotPassword, 'createTokenRecord')
-            .mockResolvedValue(false)
+        jest.spyOn(forgotPassword, 'createTokenRecord').mockResolvedValue(false)
 
         return forgotPassword
             .generateResetTokenForUser(emailAddress)
@@ -222,8 +220,6 @@ describe('verifyResetToken', () => {
 
         const emailAddress = 'test@example.com'
         const resetToken = 'reset-token'
-        const userId = 1
-        const expiryDate = add(new Date(), { days: 1 }).toISOString()
 
         tracker.on('query', (query) => {
             query.response([])
