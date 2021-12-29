@@ -1,5 +1,6 @@
 const { database } = require('./../../util/Database')
-const { UsersLib } = require('./../../lib/Users')
+const { AuthenticationLib } = require('../../lib/Authentication')
+const { UsersLib } = require('../../lib/Users')
 const mockDb = require('mock-knex')
 const bcrypt = require('bcrypt')
 const tracker = mockDb.getTracker()
@@ -16,7 +17,7 @@ afterEach(() => {
 
 describe('setPassword', () => {
     it('can set the password for a user', () => {
-        expect.assertions(3)
+        expect.assertions(4)
 
         const userId = 1
         const newPassword = 'new-password'
@@ -35,17 +36,16 @@ describe('setPassword', () => {
                 },
                 () => {
                     expect(query.method).toEqual('update')
-                    expect(query.bindings).toEqual([userId])
+                    expect(typeof query.bindings[0]).toEqual('string')
+                    expect(query.bindings[1]).toEqual(userId)
                     query.response()
                 },
             ][step - 1]()
         })
 
-        const validate
-
         const user = new UsersLib()
 
-        return user.setPassword(userId, newPassword).then(() => {})
+        return user.setPassword(userId, newPassword)
     })
 
     it('will not change the password for the user if it is the same', () => {

@@ -25,6 +25,7 @@
         "mock-knex": "^0.4.10",
         "prettier": "^2.5.1",
         "serverless-dotenv-plugin": "^3.11.1",
-        "serverless-offline": "^8.3.1"
+        "serverless-offline": "^8.3.1",
+        "sinon": "^12.0.1"
     }
 }
