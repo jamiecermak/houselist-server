@@ -122,7 +122,7 @@ describe('generateResetToken', () => {
         const response = forgotPassword.generateResetToken()
 
         expect(typeof response).toEqual('string')
-        expect(response.length).toEqual(36)
+        expect(response).toEqual('test-uuid')
     })
 })
 
