@@ -162,9 +162,136 @@ describe('isListItemCreator', () => {
     })
 })
 
-describe('List Items Lib', () => {
-    it.todo('can resolve a list item if a member of the list')
+describe('resolveItem', () => {
+    it('will resolve an unresolved item if the user is a member of the list', () => {
+        expect.assertions(3)
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
 
+        tracker.on('query', (query, step) => {
+            return [
+                () => {
+                    expect(query.method).toEqual('first')
+                    query.response([
+                        {
+                            id: 40,
+                            List_id: listId,
+                            is_resolved: false,
+                        },
+                    ])
+                },
+                () => {
+                    expect(query.method).toEqual('update')
+                    query.response()
+                },
+            ][step - 1]()
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .resolveItem(listItemId, userId)
+            .then(() => {
+                expect(isListMember.calledWith(listId, userId)).toEqual(true)
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if a non-member attempts to resolve', () => {
+        expect.assertions(3)
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([
+                {
+                    id: 40,
+                    List_id: listId,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(false)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .resolveItem(listItemId, userId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(
+                    `User ${userId} is not a member of List ${listId}`,
+                )
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item is already resolved', () => {
+        expect.assertions(2)
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: 40,
+                    List_id: listId,
+                    is_resolved: true,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .resolveItem(listItemId, userId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(`Item has already been resolved`)
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item does not exist', () => {
+        expect.assertions(2)
+        const listItemId = 10
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            query.response([])
+        })
+
+        const listItems = new ListItemsLib()
+
+        return listItems.resolveItem(listItemId, userId).catch((ex) => {
+            expect(ex).toBeInstanceOf(Error)
+            expect(ex.message).toEqual(`Item does not exist`)
+        })
+    })
+})
+
+describe('List Items Lib', () => {
     it.todo('can delete a list item if the user created it')
 
     it.todo(
