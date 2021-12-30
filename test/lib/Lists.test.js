@@ -149,7 +149,7 @@ describe('deleteList', () => {
         const userId = 10
         const listId = 20
 
-        tracker.on('query', (query, step) => {
+        tracker.on('query', (query) => {
             expect(query.method).toEqual('first')
             query.response([
                 {
