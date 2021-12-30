@@ -132,7 +132,7 @@ describe('deleteList', () => {
             .mockResolvedValue(true)
 
         return lists.deleteList(userId, listId).then(() => {
-            expect(isListOwner).toBeCalledWith(userId, listId)
+            expect(isListOwner).toBeCalledWith(listId, userId)
         })
     })
 
@@ -149,7 +149,7 @@ describe('deleteList', () => {
             .mockResolvedValue(false)
 
         return lists.deleteList(userId, listId).catch((ex) => {
-            expect(isListOwner).toBeCalledWith(userId, listId)
+            expect(isListOwner).toBeCalledWith(listId, userId)
             expect(ex).toBeInstanceOf(Error)
             expect(ex.message).toEqual(
                 'Can not delete List 20 as User 10 did not create it',
@@ -186,7 +186,7 @@ describe('updateList', () => {
                 emoji: listEmoji,
             })
             .then(() => {
-                expect(isListOwner).toBeCalledWith(userId, listId)
+                expect(isListOwner).toBeCalledWith(listId, userId)
             })
     })
 
@@ -216,7 +216,7 @@ describe('updateList', () => {
                 expect(ex.message).toEqual(
                     'Can not modify List 20 as User 30 did not create it',
                 )
-                expect(isListOwner).toBeCalledWith(userId, listId)
+                expect(isListOwner).toBeCalledWith(listId, userId)
             })
     })
 
@@ -291,13 +291,14 @@ describe('updateList', () => {
 
 describe('isListOwner', () => {
     it('will return true if the userId is the owner of listId', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const userId = 10
         const listId = 20
 
         tracker.on('query', (query) => {
             expect(query.method).toEqual('first')
+            expect(query.bindings).toEqual([listId, userId, 1])
             query.response([
                 {
                     id: 20,
@@ -309,24 +310,25 @@ describe('isListOwner', () => {
         const lists = new ListsLib()
 
         return lists
-            .isListOwner(userId, listId)
+            .isListOwner(listId, userId)
             .then((isOwner) => expect(isOwner).toEqual(true))
     })
 
     it('will return false if the userId is not the owner of listId', () => {
-        expect.assertions(1)
+        expect.assertions(2)
 
         const userId = 10
         const listId = 20
 
         tracker.on('query', (query) => {
+            expect(query.bindings).toEqual([listId, userId, 1])
             query.response([])
         })
 
         const lists = new ListsLib()
 
         return lists
-            .isListOwner(userId, listId)
+            .isListOwner(listId, userId)
             .then((isOwner) => expect(isOwner).toEqual(false))
     })
 })
