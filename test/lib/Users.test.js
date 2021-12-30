@@ -6,6 +6,8 @@ const sinon = require('sinon')
 const { UserProfileImagesLib } = require('../../lib/UserProfileImages')
 const tracker = mockDb.getTracker()
 
+jest.mock('../../util/Secrets')
+
 beforeEach(() => {
     mockDb.mock(database)
     tracker.install()
@@ -212,7 +214,7 @@ describe('updateUsersName', () => {
 
 describe('changeUserProfileImage', () => {
     it('will update a users profile image with a new uploaded one', () => {
-        expect.assertions(5)
+        expect.assertions(4)
 
         const userId = 20
         const s3Path = 'profile-images/test.jpg'
@@ -220,12 +222,6 @@ describe('changeUserProfileImage', () => {
 
         tracker.on('query', (query) => {
             expect(query.method).toEqual('update')
-            expect(query.bindings).toEqual([
-                'storage-s3-bucket',
-                'profile-images/test.jpg',
-                userId,
-            ])
-
             query.response()
         })
 
@@ -233,7 +229,7 @@ describe('changeUserProfileImage', () => {
             .stub(UserProfileImagesLib.prototype, 'uploadProfileImageToS3')
             .resolves(s3Path)
 
-        sinon
+        const generateProfileImageName = sinon
             .stub(UserProfileImagesLib.prototype, 'generateProfileImageName')
             .returns(s3Path)
 
@@ -242,7 +238,10 @@ describe('changeUserProfileImage', () => {
         return users
             .changeUserProfileImage(userId, testImageBuffer)
             .then((response) => {
-                expect(response).toEqual(s3Path)
+                expect(response).toEqual({
+                    bucket: 'storage-s3-bucket',
+                    key: s3Path,
+                })
                 expect(uploadProfileImageToS3.callCount).toEqual(1)
                 expect(
                     uploadProfileImageToS3.calledWith(
@@ -250,7 +249,75 @@ describe('changeUserProfileImage', () => {
                         s3Path,
                         testImageBuffer,
                     ),
+                ).toEqual(true)
+            })
+            .finally(() => {
+                uploadProfileImageToS3.restore()
+                generateProfileImageName.restore()
+            })
+    })
+
+    it('will throw an error if the upload fails', () => {
+        expect.assertions(2)
+
+        const userId = 20
+        const s3Path = 'profile-images/test.jpg'
+        const testImageBuffer = Buffer.from('test-buffer')
+
+        const uploadProfileImageToS3 = sinon
+            .stub(UserProfileImagesLib.prototype, 'uploadProfileImageToS3')
+            .rejects(new Error('test'))
+
+        const generateProfileImageName = sinon
+            .stub(UserProfileImagesLib.prototype, 'generateProfileImageName')
+            .returns(s3Path)
+
+        const users = new UsersLib()
+
+        return users
+            .changeUserProfileImage(userId, testImageBuffer)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('AWS S3 Upload Failed')
+            })
+            .finally(() => {
+                uploadProfileImageToS3.restore()
+                generateProfileImageName.restore()
+            })
+    })
+
+    it('will throw an error if the database update fails', () => {
+        expect.assertions(2)
+
+        const userId = 20
+        const s3Path = 'profile-images/test.jpg'
+        const testImageBuffer = Buffer.from('test-buffer')
+
+        tracker.on('query', (query) => {
+            query.reject(new Error('test'))
+        })
+
+        const uploadProfileImageToS3 = sinon
+            .stub(UserProfileImagesLib.prototype, 'uploadProfileImageToS3')
+            .resolves(s3Path)
+
+        const generateProfileImageName = sinon
+            .stub(UserProfileImagesLib.prototype, 'generateProfileImageName')
+            .returns(s3Path)
+
+        const users = new UsersLib()
+
+        return users
+            .changeUserProfileImage(userId, testImageBuffer)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(
+                    'Failed to Update Profile Image in Database',
                 )
+            })
+            .finally(() => {
+                uploadProfileImageToS3.restore()
+                generateProfileImageName.restore()
             })
     })
 })
