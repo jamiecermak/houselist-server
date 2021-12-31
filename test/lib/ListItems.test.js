@@ -291,9 +291,219 @@ describe('resolveItem', () => {
     })
 })
 
-describe('List Items Lib', () => {
-    it.todo('can delete a list item if the user created it')
+describe('deleteItem', () => {
+    it('can delete an item if they are the user that created it', () => {
+        expect.assertions(4)
 
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query, step) => {
+            return [
+                () => {
+                    expect(query.method).toEqual('first')
+                    query.response([
+                        {
+                            id: listItemId,
+                            CreatedBy_id: userId,
+                            List_id: listId,
+                            is_resolved: false,
+                        },
+                    ])
+                },
+                () => {
+                    expect(query.method).toEqual('del')
+                    query.response()
+                },
+            ][step - 1]()
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        const isListItemCreator = jest
+            .spyOn(listItems, 'isListItemCreator')
+            .mockResolvedValue(true)
+
+        return listItems
+            .deleteItem(listItemId, userId)
+            .then(() => {
+                expect(isListMember.calledWith(listId, userId)).toEqual(true)
+                expect(isListItemCreator).toBeCalledWith(listItemId, userId)
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if it is not the user that created the item', () => {
+        expect.assertions(3)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([
+                {
+                    id: listItemId,
+                    CreatedBy_id: userId,
+                    List_id: listId,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        jest.spyOn(listItems, 'isListItemCreator').mockResolvedValue(false)
+
+        return listItems
+            .deleteItem(listItemId, userId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(
+                    'User 30 did not create List Item 10',
+                )
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the user is not a member of the list', () => {
+        expect.assertions(3)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([
+                {
+                    id: listItemId,
+                    CreatedBy_id: userId,
+                    List_id: listId,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(false)
+
+        const listItems = new ListItemsLib()
+
+        jest.spyOn(listItems, 'isListItemCreator').mockResolvedValue(false)
+
+        return listItems
+            .deleteItem(listItemId, userId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('User 30 is not a member of List 20')
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item was created by the user but they are not a member', () => {
+        expect.assertions(3)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([
+                {
+                    id: listItemId,
+                    CreatedBy_id: userId,
+                    List_id: listId,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(false)
+
+        const listItems = new ListItemsLib()
+
+        jest.spyOn(listItems, 'isListItemCreator').mockResolvedValue(true)
+
+        return listItems
+            .deleteItem(listItemId, userId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('User 30 is not a member of List 20')
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item does not exist', () => {
+        expect.assertions(3)
+
+        const listItemId = 10
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response()
+        })
+
+        const listItems = new ListItemsLib()
+
+        return listItems.deleteItem(listItemId, userId).catch((ex) => {
+            expect(ex).toBeInstanceOf(Error)
+            expect(ex.message).toEqual('List item does not exist')
+        })
+    })
+
+    it('will throw an error if the item has already been resolved', () => {
+        expect.assertions(3)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('first')
+            query.response([
+                {
+                    id: listItemId,
+                    CreatedBy_id: userId,
+                    List_id: listId,
+                    is_resolved: true,
+                },
+            ])
+        })
+
+        const listItems = new ListItemsLib()
+
+        return listItems.deleteItem(listItemId, userId).catch((ex) => {
+            expect(ex).toBeInstanceOf(Error)
+            expect(ex.message).toEqual('List item has already been resolved')
+        })
+    })
+})
+
+describe('List Items Lib', () => {
     it.todo(
         'can change the name and description of a list item if the user created it',
     )
