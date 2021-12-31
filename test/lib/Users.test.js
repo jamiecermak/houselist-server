@@ -8,6 +8,10 @@ const tracker = mockDb.getTracker()
 
 jest.mock('../../util/Secrets')
 
+jest.mock('../../util/AWS')
+const AWS = require('../../util/AWS')
+const { query } = require('express')
+
 beforeEach(() => {
     mockDb.mock(database)
     tracker.install()
@@ -322,6 +326,65 @@ describe('changeUserProfileImage', () => {
     })
 })
 
-describe('Users Lib', () => {
-    it.todo('can generate a signed url link for a user')
+describe('getUsersByIds', () => {
+    it('can get a list of users with pre-signed profile image urls', () => {
+        const userIds = [10, 20, 30]
+
+        tracker.on('query', (query) => {
+            expect(query.method).toEqual('select')
+            query.response([
+                {
+                    id: 10,
+                    name: 'John Smith',
+                    profile_image_bucket: 'test-bucket-10',
+                    profile_image_key: 'test-key-10',
+                },
+                {
+                    id: 20,
+                    name: 'Jane Doe',
+                    profile_image_bucket: null,
+                    profile_image_key: null,
+                },
+                {
+                    id: 30,
+                    name: 'Tim Apple',
+                    profile_image_bucket: 'test-bucket-30',
+                    profile_image_key: 'test-key-30',
+                },
+            ])
+        })
+
+        const users = new UsersLib()
+
+        return users.getUsersByIds(userIds).then((response) => {
+            expect(AWS.generateSignedUrl).toBeCalledTimes(2)
+            expect(AWS.generateSignedUrl).toHaveBeenNthCalledWith(
+                1,
+                'test-bucket-10',
+                'test-key-10',
+            )
+            expect(AWS.generateSignedUrl).toHaveBeenNthCalledWith(
+                2,
+                'test-bucket-30',
+                'test-key-30',
+            )
+            expect(response).toEqual([
+                {
+                    id: 10,
+                    name: 'John Smith',
+                    profile_image_url: 'test-bucket-10/test-key-10',
+                },
+                {
+                    id: 20,
+                    name: 'Jane Doe',
+                    profile_image_url: null,
+                },
+                {
+                    id: 30,
+                    name: 'Tim Apple',
+                    profile_image_url: 'test-bucket-30/test-key-30',
+                },
+            ])
+        })
+    })
 })
