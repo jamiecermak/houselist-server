@@ -3,6 +3,7 @@ const mockDb = require('mock-knex')
 const sinon = require('sinon')
 const { ListMembersLib } = require('../../lib/ListMembers')
 const { ListItemsLib } = require('../../lib/ListItems')
+const { ListPrioritiesLib } = require('../../lib/ListPriorities')
 const tracker = mockDb.getTracker()
 
 beforeEach(() => {
@@ -500,6 +501,221 @@ describe('deleteItem', () => {
             expect(ex).toBeInstanceOf(Error)
             expect(ex.message).toEqual('List item has already been resolved')
         })
+    })
+})
+
+describe('changeItemPriority', () => {
+    it('can change the item priority if it is not resolved, and the user is a member of the list', () => {
+        expect.assertions(3)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const priorityId = ListPrioritiesLib.NORMAL
+
+        tracker.on('query', (query, step) => {
+            return [
+                () => {
+                    expect(query.method).toEqual('first')
+                    query.response([
+                        {
+                            id: listItemId,
+                            List_id: listId,
+                            Priority_id: ListPrioritiesLib.URGENT,
+                            is_resolved: false,
+                        },
+                    ])
+                },
+                () => {
+                    expect(query.method).toEqual('update')
+                    query.response()
+                },
+            ][step - 1]()
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .changeItemPriority(listItemId, userId, priorityId)
+            .then(() => {
+                expect(isListMember.calledWith(listId, userId)).toEqual(true)
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the user is not a member of the list', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const priorityId = ListPrioritiesLib.NORMAL
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listItemId,
+                    List_id: listId,
+                    Priority_id: ListPrioritiesLib.URGENT,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(false)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .changeItemPriority(listItemId, userId, priorityId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('User 30 is not a member of List 20')
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the priority is not valid', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const priorityId = 9999
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listItemId,
+                    List_id: listId,
+                    Priority_id: ListPrioritiesLib.URGENT,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .changeItemPriority(listItemId, userId, priorityId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('Invalid Priority Value')
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the new priority is the same as the old one', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const priorityId = ListPrioritiesLib.URGENT
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listItemId,
+                    List_id: listId,
+                    Priority_id: ListPrioritiesLib.URGENT,
+                    is_resolved: false,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .changeItemPriority(listItemId, userId, priorityId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(
+                    'New Priority can not be the same as Old Priority',
+                )
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item is already resolved', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const priorityId = ListPrioritiesLib.NORMAL
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listItemId,
+                    List_id: listId,
+                    Priority_id: ListPrioritiesLib.URGENT,
+                    is_resolved: true,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .changeItemPriority(listItemId, userId, priorityId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(
+                    'Item Priority can not be changed after it is resolved',
+                )
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item does not exist', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const userId = 30
+        const priorityId = ListPrioritiesLib.NORMAL
+
+        tracker.on('query', (query) => {
+            query.response([])
+        })
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .changeItemPriority(listItemId, userId, priorityId)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('Item does not exist')
+            })
     })
 })
 
