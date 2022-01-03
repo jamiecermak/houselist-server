@@ -1,8 +1,5 @@
 const { SuccessResponse, ErrorResponse } = require('../../util/APIResponses')
-const {
-    ServerError,
-    ServerValidationError,
-} = require('../../util/ServerErrors')
+const { ServerError } = require('../../util/ServerErrors')
 
 describe('SuccessResponse', () => {
     it('will create a 200 success response with object data', () => {
