@@ -815,7 +815,6 @@ describe('updateListItem', () => {
         expect.assertions(2)
 
         const listItemId = 10
-        const listId = 20
         const userId = 30
         const payload = {
             name: 'test',
@@ -841,7 +840,6 @@ describe('updateListItem', () => {
         expect.assertions(2)
 
         const listItemId = 10
-        const listId = 20
         const userId = 30
         const payload = {}
 
@@ -902,7 +900,6 @@ describe('updateListItem', () => {
         expect.assertions(2)
 
         const listItemId = 10
-        const listId = 20
         const userId = 30
         const payload = {
             name: 'test',

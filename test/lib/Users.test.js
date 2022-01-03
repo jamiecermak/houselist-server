@@ -10,7 +10,6 @@ jest.mock('../../util/Secrets')
 
 jest.mock('../../util/AWS')
 const AWS = require('../../util/AWS')
-const { query } = require('express')
 
 beforeEach(() => {
     mockDb.mock(database)
