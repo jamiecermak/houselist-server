@@ -719,8 +719,205 @@ describe('changeItemPriority', () => {
     })
 })
 
-describe('List Items Lib', () => {
-    it.todo(
-        'can change the name and description of a list item if the user created it',
-    )
+describe('updateListItem', () => {
+    it('can update the name, description and emoji of a list item', () => {
+        expect.assertions(4)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const payload = {
+            name: 'test',
+            description: 'test description',
+            emoji: '🥑',
+        }
+
+        tracker.on('query', (query, step) => {
+            return [
+                () => {
+                    expect(query.method).toEqual('first')
+                    query.response([
+                        {
+                            id: listItemId,
+                            List_id: listId,
+                            CreatedBy_id: userId,
+                        },
+                    ])
+                },
+                () => {
+                    expect(query.method).toEqual('update')
+                    query.response()
+                },
+            ][step - 1]()
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        const isListItemCreator = jest
+            .spyOn(listItems, 'isListItemCreator')
+            .mockResolvedValue(true)
+
+        return listItems
+            .updateListItem(listItemId, userId, payload)
+            .then(() => {
+                expect(isListMember.calledWith(listId, userId)).toEqual(true)
+                expect(isListItemCreator).toBeCalledWith(listItemId, userId)
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the user is not a member of the list', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const payload = {
+            name: 'test',
+            description: 'test description',
+            emoji: '🥑',
+        }
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listItemId,
+                    List_id: listId,
+                    CreatedBy_id: userId,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(false)
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .updateListItem(listItemId, userId, payload)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('User ID 30 is not a member of List')
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if the item does not exist', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const payload = {
+            name: 'test',
+            description: 'test description',
+            emoji: '🥑',
+        }
+
+        tracker.on('query', (query) => {
+            query.response([])
+        })
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .updateListItem(listItemId, userId, payload)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('Item does not exist')
+            })
+    })
+
+    it('will throw an error if an empty object is passed', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const payload = {}
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .updateListItem(listItemId, userId, payload)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('Invalid Payload')
+            })
+    })
+
+    it('will throw an error if a user who did not create it updates the list item', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const payload = {
+            name: 'test',
+            description: 'test description',
+            emoji: '🥑',
+        }
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listItemId,
+                    List_id: listId,
+                    CreatedBy_id: 40,
+                },
+            ])
+        })
+
+        const isListMember = sinon
+            .stub(ListMembersLib.prototype, 'isListMember')
+            .resolves(true)
+
+        const listItems = new ListItemsLib()
+
+        jest.spyOn(listItems, 'isListItemCreator').mockResolvedValue(false)
+
+        return listItems
+            .updateListItem(listItemId, userId, payload)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual(
+                    'User ID 30 did not create List Item 10',
+                )
+            })
+            .finally(() => {
+                isListMember.restore()
+            })
+    })
+
+    it('will throw an error if there are unsupported options', () => {
+        expect.assertions(2)
+
+        const listItemId = 10
+        const listId = 20
+        const userId = 30
+        const payload = {
+            name: 'test',
+            description: 'test description',
+            emoji: '🥑',
+            unsupportedOption: true,
+        }
+
+        const listItems = new ListItemsLib()
+
+        return listItems
+            .updateListItem(listItemId, userId, payload)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(Error)
+                expect(ex.message).toEqual('Invalid Payload')
+            })
+    })
 })
