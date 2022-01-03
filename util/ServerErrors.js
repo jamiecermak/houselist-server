@@ -1,5 +1,3 @@
-const { ErrorResponse } = require('./APIResponses')
-
 class ServerError extends Error {
     statusCode = 500
     humanMessage = ''
