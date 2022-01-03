@@ -1,7 +1,7 @@
 require('dotenv').config({
     path: `.env.${process.env.NODE_ENV}`,
 })
-console.log(process.env.HL_DB_CONNECTION_STRING)
+
 module.exports = {
     development: {
         client: 'postgresql',
