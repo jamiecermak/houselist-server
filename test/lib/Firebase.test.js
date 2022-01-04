@@ -5,6 +5,10 @@ const sinon = require('sinon')
 
 const FirebaseApp = require('../../util/FirebaseApp')
 const { FirebaseLib } = require('../../lib/Firebase')
+const {
+    ServerDatabaseError,
+    ServerGeneralError,
+} = require('../../util/ServerErrors')
 
 beforeEach(() => {
     mockDb.mock(database)
@@ -42,8 +46,8 @@ describe('addFCMTokenToUser', () => {
         const firebase = new FirebaseLib()
 
         return firebase.addFCMTokenToUser(userId, fcmToken).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Could not add FCM Token for User ID 20')
+            expect(ex).toBeInstanceOf(ServerDatabaseError)
+            expect(ex.message).toContain('test')
         })
     })
 })
@@ -192,8 +196,8 @@ describe('sendFCMPayloadToUsers', () => {
         )
 
         return firebase.sendFCMPayloadToUsers(payload, userIds).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Failed to send FCM Payloads')
+            expect(ex).toBeInstanceOf(ServerGeneralError)
+            expect(ex.message).toContain('Failed to send FCM Payloads')
         })
     })
 })
