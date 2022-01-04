@@ -7,7 +7,6 @@ const { ListPrioritiesLib } = require('../../lib/ListPriorities')
 const {
     ServerPermissionsError,
     ServerValidationError,
-    ServerGeneralError,
     ServerNotFoundError,
 } = require('../../util/ServerErrors')
 const tracker = mockDb.getTracker()

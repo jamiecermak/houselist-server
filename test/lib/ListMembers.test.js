@@ -4,6 +4,10 @@ const tracker = mockDb.getTracker()
 const sinon = require('sinon')
 const { ListMembersLib } = require('../../lib/ListMembers')
 const { ListsLib } = require('../../lib/Lists')
+const {
+    ServerPermissionsError,
+    ServerValidationError,
+} = require('../../util/ServerErrors')
 
 beforeEach(() => {
     mockDb.mock(database)
@@ -63,8 +67,8 @@ describe('addMemberToList', () => {
         return listItems
             .addMemberToList(userId, listId, addUserId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     'Can not add User 30 to List 20 as User 10 is not the owner',
                 )
                 expect(isListOwner.calledWith(listId, userId)).toEqual(true)
@@ -149,8 +153,8 @@ describe('removeMemberFromList', () => {
         return listMembers
             .removeMemberForList(userId, listId, addUserId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     'Can not remove User 30 from List 20 as User 10 is not the owner',
                 )
             })
@@ -187,7 +191,7 @@ describe('removeMemberFromList', () => {
     })
 
     it('will throw an error if a user attempts to remove themselves from the list as owner', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const userId = 10
         const listId = 20
@@ -202,8 +206,13 @@ describe('removeMemberFromList', () => {
         return listMembers
             .removeMemberForList(userId, listId, removeUserId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('Can not remove the owner of a list')
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
+                    'Can not remove the owner of a list',
+                )
+                expect(ex.humanMessage).toContain(
+                    'Can not remove the owner of a list',
+                )
             })
             .finally(() => {
                 isListOwner.restore()
