@@ -4,6 +4,12 @@ const sinon = require('sinon')
 const { ListMembersLib } = require('../../lib/ListMembers')
 const { ListItemsLib } = require('../../lib/ListItems')
 const { ListPrioritiesLib } = require('../../lib/ListPriorities')
+const {
+    ServerPermissionsError,
+    ServerValidationError,
+    ServerGeneralError,
+    ServerNotFoundError,
+} = require('../../util/ServerErrors')
 const tracker = mockDb.getTracker()
 
 beforeEach(() => {
@@ -57,6 +63,8 @@ describe('addItemToList', () => {
     })
 
     it('will throw an error if the user is not a member of the list', () => {
+        expect.assertions(2)
+
         const listId = 10
         const userId = 20
         const payload = {
@@ -75,8 +83,8 @@ describe('addItemToList', () => {
         return listItems
             .addItemToList(listId, userId, payload)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     'Can not create list item as User 20 is not a member of List 10',
                 )
             })
@@ -86,6 +94,8 @@ describe('addItemToList', () => {
     })
 
     it('will throw an error if invalid payload', () => {
+        expect.assertions(1)
+
         const listId = 10
         const userId = 20
         const payload = {
@@ -97,12 +107,13 @@ describe('addItemToList', () => {
         const listItems = new ListItemsLib()
 
         return listItems.addItemToList(listId, userId, payload).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Invalid Payload')
+            expect(ex).toBeInstanceOf(ServerValidationError)
         })
     })
 
     it('will throw an error if extra options are provided', () => {
+        expect.assertions(1)
+
         const listId = 10
         const userId = 20
         const payload = {
@@ -116,14 +127,15 @@ describe('addItemToList', () => {
         const listItems = new ListItemsLib()
 
         return listItems.addItemToList(listId, userId, payload).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Invalid Payload')
+            expect(ex).toBeInstanceOf(ServerValidationError)
         })
     })
 })
 
 describe('isListItemCreator', () => {
     it('returns true when the user created the item', () => {
+        expect.assertions(2)
+
         const userId = 10
         const listItemId = 20
 
@@ -146,6 +158,8 @@ describe('isListItemCreator', () => {
     })
 
     it('returns false if the user did not create the item', () => {
+        expect.assertions(1)
+
         const userId = 10
         const listItemId = 20
 
@@ -231,8 +245,8 @@ describe('resolveItem', () => {
         return listItems
             .resolveItem(listItemId, userId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     `User ${userId} is not a member of List ${listId}`,
                 )
             })
@@ -242,7 +256,8 @@ describe('resolveItem', () => {
     })
 
     it('will throw an error if the item is already resolved', () => {
-        expect.assertions(2)
+        expect.assertions(3)
+
         const listItemId = 10
         const listId = 20
         const userId = 30
@@ -266,8 +281,11 @@ describe('resolveItem', () => {
         return listItems
             .resolveItem(listItemId, userId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(`Item has already been resolved`)
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(`Item has already been resolved`)
+                expect(ex.humanMessage).toContain(
+                    'Item has already been resolved',
+                )
             })
             .finally(() => {
                 isListMember.restore()
@@ -275,7 +293,7 @@ describe('resolveItem', () => {
     })
 
     it('will throw an error if the item does not exist', () => {
-        expect.assertions(2)
+        expect.assertions(3)
         const listItemId = 10
         const userId = 30
 
@@ -286,8 +304,9 @@ describe('resolveItem', () => {
         const listItems = new ListItemsLib()
 
         return listItems.resolveItem(listItemId, userId).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual(`Item does not exist`)
+            expect(ex).toBeInstanceOf(ServerNotFoundError)
+            expect(ex.message.toLowerCase()).toContain(`item`)
+            expect(ex.humanMessage.toLowerCase()).toContain(`item`)
         })
     })
 })
@@ -371,8 +390,8 @@ describe('deleteItem', () => {
         return listItems
             .deleteItem(listItemId, userId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     'User 30 did not create List Item 10',
                 )
             })
@@ -411,8 +430,10 @@ describe('deleteItem', () => {
         return listItems
             .deleteItem(listItemId, userId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('User 30 is not a member of List 20')
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
+                    'User 30 is not a member of List 20',
+                )
             })
             .finally(() => {
                 isListMember.restore()
@@ -449,8 +470,10 @@ describe('deleteItem', () => {
         return listItems
             .deleteItem(listItemId, userId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('User 30 is not a member of List 20')
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
+                    'User 30 is not a member of List 20',
+                )
             })
             .finally(() => {
                 isListMember.restore()
@@ -458,7 +481,7 @@ describe('deleteItem', () => {
     })
 
     it('will throw an error if the item does not exist', () => {
-        expect.assertions(3)
+        expect.assertions(4)
 
         const listItemId = 10
         const userId = 30
@@ -471,13 +494,14 @@ describe('deleteItem', () => {
         const listItems = new ListItemsLib()
 
         return listItems.deleteItem(listItemId, userId).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('List item does not exist')
+            expect(ex).toBeInstanceOf(ServerNotFoundError)
+            expect(ex.message.toLowerCase()).toContain('list item')
+            expect(ex.humanMessage.toLowerCase()).toContain('list item')
         })
     })
 
     it('will throw an error if the item has already been resolved', () => {
-        expect.assertions(3)
+        expect.assertions(4)
 
         const listItemId = 10
         const listId = 20
@@ -498,8 +522,9 @@ describe('deleteItem', () => {
         const listItems = new ListItemsLib()
 
         return listItems.deleteItem(listItemId, userId).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('List item has already been resolved')
+            expect(ex).toBeInstanceOf(ServerValidationError)
+            expect(ex.message).toContain('List item has already been resolved')
+            expect(ex.message).toContain('List item has already been resolved')
         })
     })
 })
@@ -577,8 +602,10 @@ describe('changeItemPriority', () => {
         return listItems
             .changeItemPriority(listItemId, userId, priorityId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('User 30 is not a member of List 20')
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
+                    'User 30 is not a member of List 20',
+                )
             })
             .finally(() => {
                 isListMember.restore()
@@ -586,7 +613,7 @@ describe('changeItemPriority', () => {
     })
 
     it('will throw an error if the priority is not valid', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const listItemId = 10
         const listId = 20
@@ -613,8 +640,9 @@ describe('changeItemPriority', () => {
         return listItems
             .changeItemPriority(listItemId, userId, priorityId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('Invalid Priority Value')
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain('Invalid Priority Value')
+                expect(ex.humanMessage).toContain('Invalid Priority Value')
             })
             .finally(() => {
                 isListMember.restore()
@@ -622,7 +650,7 @@ describe('changeItemPriority', () => {
     })
 
     it('will throw an error if the new priority is the same as the old one', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const listItemId = 10
         const listId = 20
@@ -649,8 +677,11 @@ describe('changeItemPriority', () => {
         return listItems
             .changeItemPriority(listItemId, userId, priorityId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
+                    'New Priority can not be the same as Old Priority',
+                )
+                expect(ex.humanMessage).toContain(
                     'New Priority can not be the same as Old Priority',
                 )
             })
@@ -660,7 +691,7 @@ describe('changeItemPriority', () => {
     })
 
     it('will throw an error if the item is already resolved', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const listItemId = 10
         const listId = 20
@@ -687,8 +718,11 @@ describe('changeItemPriority', () => {
         return listItems
             .changeItemPriority(listItemId, userId, priorityId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
+                    'Item Priority can not be changed after it is resolved',
+                )
+                expect(ex.humanMessage).toContain(
                     'Item Priority can not be changed after it is resolved',
                 )
             })
@@ -698,7 +732,7 @@ describe('changeItemPriority', () => {
     })
 
     it('will throw an error if the item does not exist', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const listItemId = 10
         const userId = 30
@@ -713,8 +747,9 @@ describe('changeItemPriority', () => {
         return listItems
             .changeItemPriority(listItemId, userId, priorityId)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('Item does not exist')
+                expect(ex).toBeInstanceOf(ServerNotFoundError)
+                expect(ex.message.toLowerCase()).toContain('list item')
+                expect(ex.humanMessage.toLowerCase()).toContain('list item')
             })
     })
 })
@@ -803,8 +838,10 @@ describe('updateListItem', () => {
         return listItems
             .updateListItem(listItemId, userId, payload)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('User ID 30 is not a member of List')
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
+                    'User ID 30 is not a member of List',
+                )
             })
             .finally(() => {
                 isListMember.restore()
@@ -812,7 +849,7 @@ describe('updateListItem', () => {
     })
 
     it('will throw an error if the item does not exist', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const listItemId = 10
         const userId = 30
@@ -831,13 +868,14 @@ describe('updateListItem', () => {
         return listItems
             .updateListItem(listItemId, userId, payload)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('Item does not exist')
+                expect(ex).toBeInstanceOf(ServerNotFoundError)
+                expect(ex.message.toLowerCase()).toContain('list item')
+                expect(ex.humanMessage.toLowerCase()).toContain('list item')
             })
     })
 
     it('will throw an error if an empty object is passed', () => {
-        expect.assertions(2)
+        expect.assertions(1)
 
         const listItemId = 10
         const userId = 30
@@ -848,8 +886,7 @@ describe('updateListItem', () => {
         return listItems
             .updateListItem(listItemId, userId, payload)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('Invalid Payload')
+                expect(ex).toBeInstanceOf(ServerValidationError)
             })
     })
 
@@ -886,8 +923,8 @@ describe('updateListItem', () => {
         return listItems
             .updateListItem(listItemId, userId, payload)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     'User ID 30 did not create List Item 10',
                 )
             })
@@ -897,7 +934,7 @@ describe('updateListItem', () => {
     })
 
     it('will throw an error if there are unsupported options', () => {
-        expect.assertions(2)
+        expect.assertions(1)
 
         const listItemId = 10
         const userId = 30
@@ -913,8 +950,7 @@ describe('updateListItem', () => {
         return listItems
             .updateListItem(listItemId, userId, payload)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('Invalid Payload')
+                expect(ex).toBeInstanceOf(ServerValidationError)
             })
     })
 })

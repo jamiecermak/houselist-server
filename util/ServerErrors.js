@@ -23,7 +23,7 @@ class ServerValidationError extends ServerError {
 
         super(
             400,
-            `Invalid Payload${systemMessageString}`,
+            `Invalid Request${systemMessageString}`,
             `There was an issue processing your request.${humanMessageString}`,
         )
     }

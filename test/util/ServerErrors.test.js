@@ -21,7 +21,7 @@ describe('ServerValidationError', () => {
         const errorInstance = new ServerValidationError()
 
         expect(errorInstance.statusCode).toEqual(400)
-        expect(errorInstance.message).toEqual('Invalid Payload')
+        expect(errorInstance.message).toEqual('Invalid Request')
         expect(errorInstance.humanMessage).toEqual(
             'There was an issue processing your request.',
         )
@@ -32,7 +32,7 @@ describe('ServerValidationError', () => {
 
         expect(errorInstance.statusCode).toEqual(400)
         expect(errorInstance.message).toEqual(
-            'Invalid Payload (system message)',
+            'Invalid Request (system message)',
         )
         expect(errorInstance.humanMessage).toEqual(
             'There was an issue processing your request.',
@@ -47,7 +47,7 @@ describe('ServerValidationError', () => {
 
         expect(errorInstance.statusCode).toEqual(400)
         expect(errorInstance.message).toEqual(
-            'Invalid Payload (system message)',
+            'Invalid Request (system message)',
         )
         expect(errorInstance.humanMessage).toEqual(
             'There was an issue processing your request. (human message)',
