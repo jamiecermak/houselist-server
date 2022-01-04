@@ -4,6 +4,10 @@ const sinon = require('sinon')
 const { UsersLib } = require('../../lib/Users')
 const { ForgotPasswordLib } = require('../../lib/ForgotPassword')
 const { sub, add } = require('date-fns')
+const {
+    ServerGeneralError,
+    ServerValidationError,
+} = require('../../util/ServerErrors')
 const tracker = mockDb.getTracker()
 
 beforeEach(() => {
@@ -90,7 +94,8 @@ describe('generateResetTokenForUser', () => {
         return forgotPassword
             .generateResetTokenForUser(emailAddress)
             .catch((ex) => {
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerGeneralError)
+                expect(ex.message).toContain(
                     'Could not create token for User ID 1',
                 )
             })
@@ -108,7 +113,8 @@ describe('generateResetTokenForUser', () => {
         return forgotPassword
             .generateResetTokenForUser(emailAddress)
             .catch((ex) => {
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
                     'User with Email Address test@example.com not found',
                 )
             })
@@ -216,7 +222,7 @@ describe('verifyResetToken', () => {
     })
 
     it('will not honour an invalid reset token', () => {
-        expect.assertions(1)
+        expect.assertions(3)
 
         const emailAddress = 'test@example.com'
         const resetToken = 'reset-token'
@@ -230,12 +236,14 @@ describe('verifyResetToken', () => {
         return forgotPassword
             .verifyResetToken(emailAddress, resetToken)
             .catch((ex) => {
-                expect(ex.message).toEqual('Invalid Reset Token')
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain('Invalid Reset Token')
+                expect(ex.humanMessage).toContain('Invalid Reset Token')
             })
     })
 
     it('will not honour an expired password reset token', () => {
-        expect.assertions(1)
+        expect.assertions(3)
 
         const emailAddress = 'test@example.com'
         const resetToken = 'reset-token'
@@ -258,7 +266,9 @@ describe('verifyResetToken', () => {
         return forgotPassword
             .verifyResetToken(emailAddress, resetToken)
             .catch((ex) => {
-                expect(ex.message).toEqual('Expired Token')
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain('Expired Token')
+                expect(ex.humanMessage).toContain('Invalid Reset Token')
             })
     })
 })
