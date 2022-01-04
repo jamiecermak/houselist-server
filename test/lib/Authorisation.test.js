@@ -3,6 +3,7 @@ const mockDb = require('mock-knex')
 const tracker = mockDb.getTracker()
 const { AuthorisationLib } = require('../../lib/Authorisation')
 const jwt = require('jsonwebtoken')
+const { ServerAuthError } = require('../../util/ServerErrors')
 
 const jwtSecret = 'a-totally-secret-string'
 
@@ -137,8 +138,8 @@ describe('authoriseJWT', () => {
         })
 
         return authorisation.authoriseJWT(encodedJwt).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Invalid or inactive user')
+            expect(ex).toBeInstanceOf(ServerAuthError)
+            expect(ex.message).toContain('Invalid or inactive user')
         })
     })
 
@@ -152,8 +153,8 @@ describe('authoriseJWT', () => {
         })
 
         return authorisation.authoriseJWT(encodedJwt).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Failed to verify authorisation token')
+            expect(ex).toBeInstanceOf(ServerAuthError)
+            expect(ex.message).toContain('Failed to verify authorisation token')
         })
     })
 })
