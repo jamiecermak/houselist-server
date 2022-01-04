@@ -5,6 +5,7 @@ const {
     ServerPermissionsError,
     ServerAuthError,
     ServerGeneralError,
+    ServerDatabaseError,
 } = require('../../util/ServerErrors')
 
 describe('ServerError', () => {
@@ -131,5 +132,20 @@ describe('ServerGeneralError', () => {
         )
 
         expect(errorInstance.responseData).toEqual([1, 2, 3])
+    })
+})
+
+describe('ServerDatabaseError', () => {
+    it('will display an error message', () => {
+        const dbErrorInstance = new Error('system message')
+        const errorInstance = new ServerDatabaseError(dbErrorInstance)
+
+        expect(errorInstance.statusCode).toEqual(500)
+        expect(errorInstance.message).toEqual('Database Error (system message)')
+        expect(errorInstance.humanMessage).toEqual(
+            'An unexpected error occurred. Please try again.',
+        )
+        expect(errorInstance.responseData).toEqual(null)
+        expect(errorInstance.stack).toBe(dbErrorInstance.stack)
     })
 })

@@ -67,6 +67,19 @@ class ServerGeneralError extends ServerError {
     }
 }
 
+class ServerDatabaseError extends ServerError {
+    constructor(exception) {
+        super(
+            500,
+            `Database Error (${exception.message})`,
+            'An unexpected error occurred. Please try again.',
+            null,
+        )
+
+        this.stack = exception.stack
+    }
+}
+
 module.exports = {
     ServerError,
     ServerValidationError,
@@ -74,4 +87,5 @@ module.exports = {
     ServerPermissionsError,
     ServerAuthError,
     ServerGeneralError,
+    ServerDatabaseError,
 }
