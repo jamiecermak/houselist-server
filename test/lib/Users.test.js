@@ -10,6 +10,12 @@ jest.mock('../../util/Secrets')
 
 jest.mock('../../util/AWS')
 const AWS = require('../../util/AWS')
+const {
+    ServerPermissionsError,
+    ServerValidationError,
+    ServerNotFoundError,
+    ServerDatabaseError,
+} = require('../../util/ServerErrors')
 
 beforeEach(() => {
     mockDb.mock(database)
@@ -55,7 +61,7 @@ describe('setPassword', () => {
     })
 
     it('will not change the password for the user if it is the same', () => {
-        expect.assertions(2)
+        expect.assertions(4)
 
         const userId = 1
         const newPassword = 'new-password'
@@ -78,7 +84,11 @@ describe('setPassword', () => {
         const users = new UsersLib()
 
         return users.setPassword(userId, newPassword).catch((ex) => {
-            expect(ex.message).toEqual(
+            expect(ex).toBeInstanceOf(ServerValidationError)
+            expect(ex.message).toContain(
+                'New Password is not different from Old Password',
+            )
+            expect(ex.humanMessage).toContain(
                 'Your New Password must be different from your old password',
             )
         })
@@ -115,7 +125,7 @@ describe('getActiveUserById', () => {
     })
 
     it('will return null if no user is found', () => {
-        expect.assertions(3)
+        expect.assertions(4)
 
         const userId = 20
 
@@ -127,8 +137,9 @@ describe('getActiveUserById', () => {
         const users = new UsersLib()
 
         return users.getActiveUserById(userId).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('User ID 20 not found')
+            expect(ex).toBeInstanceOf(ServerNotFoundError)
+            expect(ex.message.toLowerCase()).toContain('user')
+            expect(ex.humanMessage.toLowerCase()).toContain('user')
         })
     })
 })
@@ -167,7 +178,7 @@ describe('updateUsersName', () => {
     })
 
     it('will not update a user if the name is the same', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const userId = 20
         const userNewName = 'John Smith'
@@ -182,8 +193,11 @@ describe('updateUsersName', () => {
         })
 
         return users.updateUsersName(userId, userNewName).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual(
+            expect(ex).toBeInstanceOf(ServerValidationError)
+            expect(ex.message).toContain(
+                'Old name and new name must not be the same',
+            )
+            expect(ex.humanMessage).toContain(
                 'Old name and new name must not be the same',
             )
         })
@@ -196,7 +210,7 @@ describe('updateUsersName', () => {
         const userNewName = 'Tim Apple'
 
         tracker.on('query', (query) => {
-            query.reject(new Error('test'))
+            query.reject(new Error('error 123'))
         })
 
         const users = new UsersLib()
@@ -209,8 +223,8 @@ describe('updateUsersName', () => {
         })
 
         return users.updateUsersName(userId, userNewName).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual('Could not update name for User ID 20')
+            expect(ex).toBeInstanceOf(ServerDatabaseError)
+            expect(ex.message).toContain('error 123')
         })
     })
 })
@@ -261,7 +275,7 @@ describe('changeUserProfileImage', () => {
     })
 
     it('will throw an error if the upload fails', () => {
-        expect.assertions(2)
+        expect.assertions(3)
 
         const userId = 20
         const s3Path = 'profile-images/test.jpg'
@@ -280,8 +294,9 @@ describe('changeUserProfileImage', () => {
         return users
             .changeUserProfileImage(userId, testImageBuffer)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual('AWS S3 Upload Failed')
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain('AWS S3 Upload Failed')
+                expect(ex.humanMessage).not.toContain('AWS S3 Upload Failed')
             })
             .finally(() => {
                 uploadProfileImageToS3.restore()
@@ -297,7 +312,7 @@ describe('changeUserProfileImage', () => {
         const testImageBuffer = Buffer.from('test-buffer')
 
         tracker.on('query', (query) => {
-            query.reject(new Error('test'))
+            query.reject(new Error('test 123'))
         })
 
         const uploadProfileImageToS3 = sinon
@@ -313,10 +328,8 @@ describe('changeUserProfileImage', () => {
         return users
             .changeUserProfileImage(userId, testImageBuffer)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
-                    'Failed to Update Profile Image in Database',
-                )
+                expect(ex).toBeInstanceOf(ServerDatabaseError)
+                expect(ex.message).toContain('test 123')
             })
             .finally(() => {
                 uploadProfileImageToS3.restore()
