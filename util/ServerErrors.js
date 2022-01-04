@@ -17,13 +17,14 @@ class ServerError extends Error {
 }
 
 class ServerValidationError extends ServerError {
-    constructor(details = null) {
-        const extraMessage = details ? ` (${details})` : ''
+    constructor(systemMessage = null, humanMessage = null) {
+        const systemMessageString = systemMessage ? ` (${systemMessage})` : ''
+        const humanMessageString = humanMessage ? ` (${humanMessage})` : ''
 
         super(
             400,
-            `Invalid Payload${extraMessage}`,
-            `There was an issue processing your request.${extraMessage}`,
+            `Invalid Payload${systemMessageString}`,
+            `There was an issue processing your request.${humanMessageString}`,
         )
     }
 }

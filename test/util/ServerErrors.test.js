@@ -26,15 +26,30 @@ describe('ServerValidationError', () => {
         )
     })
 
-    it('will allow an overridden message', () => {
-        const errorInstance = new ServerValidationError('incorrect options')
+    it('will allow an overridden system message', () => {
+        const errorInstance = new ServerValidationError('system message')
 
         expect(errorInstance.statusCode).toEqual(400)
         expect(errorInstance.message).toEqual(
-            'Invalid Payload (incorrect options)',
+            'Invalid Payload (system message)',
         )
         expect(errorInstance.humanMessage).toEqual(
-            'There was an issue processing your request. (incorrect options)',
+            'There was an issue processing your request.',
+        )
+    })
+
+    it('will allow an overridden system and human message', () => {
+        const errorInstance = new ServerValidationError(
+            'system message',
+            'human message',
+        )
+
+        expect(errorInstance.statusCode).toEqual(400)
+        expect(errorInstance.message).toEqual(
+            'Invalid Payload (system message)',
+        )
+        expect(errorInstance.humanMessage).toEqual(
+            'There was an issue processing your request. (human message)',
         )
     })
 })

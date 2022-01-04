@@ -2,6 +2,7 @@ const { database } = require('../../util/Database')
 const mockDb = require('mock-knex')
 const tracker = mockDb.getTracker()
 const { AuthenticationLib } = require('../../lib/Authentication')
+const { ServerValidationError } = require('../../util/ServerErrors')
 
 beforeEach(() => {
     mockDb.mock(database)
@@ -69,7 +70,11 @@ describe('authenticateUser', () => {
         return authentication
             .authenticateUser(emailAddress, password)
             .catch((ex) => {
-                expect(ex.message).toEqual('Invalid Password for User ID 1')
+                expect(ex instanceof ServerValidationError).toEqual(true)
+                expect(ex.message).toContain('Invalid Password for User ID 1')
+                expect(ex.humanMessage).toContain(
+                    'Incorrect Email Address or Password',
+                )
                 expect(validatePassword).toHaveBeenCalledTimes(1)
                 expect(validatePassword).toHaveBeenCalledWith(
                     password,
@@ -95,8 +100,12 @@ describe('authenticateUser', () => {
         return authentication
             .authenticateUser(emailAddress, password)
             .catch((ex) => {
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
                     'User with Email Address test@example.com not found',
+                )
+                expect(ex.humanMessage).toContain(
+                    'Incorrect Email Address or Password',
                 )
                 expect(validatePassword).toHaveBeenCalledTimes(0)
             })
