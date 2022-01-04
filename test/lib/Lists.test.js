@@ -1,6 +1,10 @@
 const { database } = require('../../util/Database')
 const mockDb = require('mock-knex')
 const { ListsLib } = require('../../lib/Lists')
+const {
+    ServerValidationError,
+    ServerPermissionsError,
+} = require('../../util/ServerErrors')
 const tracker = mockDb.getTracker()
 
 beforeEach(() => {
@@ -89,7 +93,7 @@ describe('createList', () => {
     })
 
     it('will throw an error if no rows are inserted', () => {
-        expect.assertions(2)
+        expect.assertions(4)
 
         const userId = 20
         const listName = 'Test List'
@@ -105,10 +109,12 @@ describe('createList', () => {
         return lists
             .createList(userId, listName, listDescription, listEmoji)
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
                     'Could not create list for User ID 20',
                 )
+                expect(ex.humanMessage).toContain('Could not create list')
+                expect(ex.humanMessage).not.toContain('for User ID 20')
             })
     })
 })
@@ -150,8 +156,8 @@ describe('deleteList', () => {
 
         return lists.deleteList(userId, listId).catch((ex) => {
             expect(isListOwner).toBeCalledWith(listId, userId)
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual(
+            expect(ex).toBeInstanceOf(ServerPermissionsError)
+            expect(ex.message).toContain(
                 'Can not delete List 20 as User 10 did not create it',
             )
         })
@@ -212,8 +218,8 @@ describe('updateList', () => {
                 emoji: listEmoji,
             })
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
+                expect(ex).toBeInstanceOf(ServerPermissionsError)
+                expect(ex.message).toContain(
                     'Can not modify List 20 as User 30 did not create it',
                 )
                 expect(isListOwner).toBeCalledWith(listId, userId)
@@ -221,7 +227,7 @@ describe('updateList', () => {
     })
 
     it('will throw an error if unexpected options are provided', () => {
-        expect.assertions(2)
+        expect.assertions(1)
 
         const userId = 30
         const listId = 20
@@ -239,15 +245,12 @@ describe('updateList', () => {
                 unexpectedOption: true,
             })
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
-                    'Invalid list update payload (Validation failed)',
-                )
+                expect(ex).toBeInstanceOf(ServerValidationError)
             })
     })
 
     it('will throw an error if no options are provided', () => {
-        expect.assertions(2)
+        expect.assertions(1)
 
         const userId = 30
         const listId = 20
@@ -255,15 +258,12 @@ describe('updateList', () => {
         const lists = new ListsLib()
 
         return lists.updateList(userId, listId, {}).catch((ex) => {
-            expect(ex).toBeInstanceOf(Error)
-            expect(ex.message).toEqual(
-                'Invalid list update payload (No options provided)',
-            )
+            expect(ex).toBeInstanceOf(ServerValidationError)
         })
     })
 
     it('will throw an error if unexpected options types are provided', () => {
-        expect.assertions(2)
+        expect.assertions(1)
 
         const userId = 30
         const listId = 20
@@ -281,10 +281,7 @@ describe('updateList', () => {
                 unexpectedOption: true,
             })
             .catch((ex) => {
-                expect(ex).toBeInstanceOf(Error)
-                expect(ex.message).toEqual(
-                    'Invalid list update payload (Validation failed)',
-                )
+                expect(ex).toBeInstanceOf(ServerValidationError)
             })
     })
 })
