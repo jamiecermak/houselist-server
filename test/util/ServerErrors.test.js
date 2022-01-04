@@ -4,6 +4,7 @@ const {
     ServerNotFoundError,
     ServerPermissionsError,
     ServerAuthError,
+    ServerGeneralError,
 } = require('../../util/ServerErrors')
 
 describe('ServerError', () => {
@@ -94,4 +95,26 @@ describe('ServerAuthError', () => {
     })
 })
 
-describe('ServerGeneralError', () => {})
+describe('ServerGeneralError', () => {
+    it('will display an error message', () => {
+        const errorInstance = new ServerGeneralError(
+            'system message',
+            'human message',
+        )
+
+        expect(errorInstance.statusCode).toEqual(500)
+        expect(errorInstance.message).toEqual('system message')
+        expect(errorInstance.humanMessage).toEqual('human message')
+        expect(errorInstance.responseData).toEqual(null)
+    })
+
+    it('will hold data', () => {
+        const errorInstance = new ServerGeneralError(
+            'system message',
+            'human message',
+            [1, 2, 3],
+        )
+
+        expect(errorInstance.responseData).toEqual([1, 2, 3])
+    })
+})

@@ -60,10 +60,17 @@ class ServerAuthError extends ServerError {
     }
 }
 
+class ServerGeneralError extends ServerError {
+    constructor(systemMessage, humanMessage, data = null) {
+        super(500, systemMessage, humanMessage, data)
+    }
+}
+
 module.exports = {
     ServerError,
     ServerValidationError,
     ServerNotFoundError,
     ServerPermissionsError,
     ServerAuthError,
+    ServerGeneralError,
 }
