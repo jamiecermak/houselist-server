@@ -2,8 +2,7 @@ const { ErrorResponse } = require('../util/APIResponses')
 
 function AppErrorHandler(err, req, res, next) {
     if (req.headersSent) {
-        next(err)
-        return
+        return next(err)
     }
 
     const { data, statusCode, success, message } =
