@@ -3,7 +3,7 @@ function ErrorHandler(fn) {
         try {
             await fn(req, res)
         } catch (ex) {
-            next(ex)
+            return next(ex)
         }
     }
 }

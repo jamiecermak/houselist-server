@@ -17,7 +17,7 @@ async function IsAuthorised(req, res, next) {
             id: userId,
         }
     } catch (ex) {
-        next(ex)
+        return next(ex)
     }
 
     next()

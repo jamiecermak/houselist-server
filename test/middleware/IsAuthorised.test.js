@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 const { AuthorisationLib } = require('../../lib/Authorisation')
 const { IsAuthorised } = require('../../middleware/IsAuthorised')
-const { ServerAuthError, ServerError } = require('../../util/ServerErrors')
+const { ServerAuthError } = require('../../util/ServerErrors')
 
 describe('IsAuthorised Middleware', () => {
     let req
@@ -23,6 +23,17 @@ describe('IsAuthorised Middleware', () => {
         return IsAuthorised(req, {}, next).then(() => {
             expect(req.get).toBeCalledWith('Authorization')
             expect(next.mock.calls[0][0]).toBeInstanceOf(ServerAuthError)
+        })
+    })
+
+    it('will call next once if error', () => {
+        expect.assertions(1)
+
+        req.get.mockReturnValue('auth-token')
+        authorisedJWT.rejects(new ServerAuthError())
+
+        return IsAuthorised(req, {}, next).then(() => {
+            expect(next).toBeCalledTimes(1)
         })
     })
 
