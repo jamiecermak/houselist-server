@@ -20,6 +20,11 @@ class APIResponse {
             message: this.message,
         }
     }
+
+    send(res) {
+        res.status(this.statusCode)
+        res.json(this.asObject())
+    }
 }
 
 class SuccessResponse extends APIResponse {

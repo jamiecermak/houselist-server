@@ -1,10 +1,13 @@
-const yup = require('yup')
 const { ServerValidationError } = require('../util/ServerErrors')
 
 function PayloadValidator(shape, { path = 'body', showMessage = false } = {}) {
     return (req, res, next) => {
         try {
             const payload = req[path]
+
+            if (!payload) {
+                throw new Error('No Payload')
+            }
 
             if (!Object.keys(req).includes('payload')) {
                 req.payload = {}

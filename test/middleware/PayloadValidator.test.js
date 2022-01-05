@@ -42,6 +42,20 @@ describe('PayloadValidator Middleware', () => {
         expect(next).toBeCalledTimes(1)
     })
 
+    it('will call next with a ServerValidationError if there is no payload', () => {
+        const yupShape = yup.object().shape({
+            testVar: yup.array(),
+        })
+
+        req.body = undefined
+
+        const payloadValidator = PayloadValidator(yupShape)
+        payloadValidator(req, {}, next)
+
+        expect(next.mock.calls[0][0]).toBeInstanceOf(ServerValidationError)
+        expect(next).toBeCalledTimes(1)
+    })
+
     it('will call next with ServerValidationError that contains the human error if showMessage is set', () => {
         const yupShape = yup.object().shape({
             testVar: yup.array(),

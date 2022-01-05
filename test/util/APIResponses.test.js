@@ -40,6 +40,27 @@ describe('SuccessResponse', () => {
 
         expect(successResponse.statusCode).toEqual(204)
     })
+
+    it('will call express statusCode and json if ->send is called', () => {
+        const res = {
+            status: jest.fn(),
+            json: jest.fn(),
+        }
+
+        const successResponse = new SuccessResponse([1, 2, 3], {
+            message: 'test message',
+            statusCode: 204,
+        })
+
+        successResponse.send(res)
+
+        expect(res.status).toBeCalledWith(204)
+        expect(res.json.mock.calls[0][0]).toEqual({
+            success: true,
+            message: 'test message',
+            data: [1, 2, 3],
+        })
+    })
 })
 
 describe('ErrorResponse', () => {
