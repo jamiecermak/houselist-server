@@ -2,6 +2,7 @@ service: houselist-server
 frameworkVersion: 2
 
 plugins:
+    - serverless-dotenv-plugin
     - serverless-offline
 
 provider:
@@ -11,6 +12,6 @@ provider:
 
 functions:
     api:
-        handler: routes/index.handler
+        handler: handler.handler
         events:
             - httpApi: '*'
