@@ -116,7 +116,7 @@ describe('getActiveUserById', () => {
 
         return users.getActiveUserById(userId).then((user) => {
             expect(typeof user).toEqual('object')
-            expect(user.emailAddress).toEqual('test@example.com')
+            expect(user.email_address).toEqual('test@example.com')
             expect(user.id).toEqual(userId)
             expect(user.name).toEqual('John Smith')
             expect(user.username).toEqual('johnsmith123')
@@ -166,7 +166,7 @@ describe('updateUsersName', () => {
             .spyOn(users, 'getActiveUserById')
             .mockResolvedValue({
                 id: 20,
-                emailAddress: 'test@example.com',
+                email_address: 'test@example.com',
                 name: 'John Smith',
                 username: 'johnsmith123',
             })
@@ -186,7 +186,7 @@ describe('updateUsersName', () => {
 
         jest.spyOn(users, 'getActiveUserById').mockResolvedValue({
             id: 20,
-            emailAddress: 'test@example.com',
+            email_address: 'test@example.com',
             name: 'John Smith',
             username: 'johnsmith123',
         })
@@ -216,7 +216,7 @@ describe('updateUsersName', () => {
 
         jest.spyOn(users, 'getActiveUserById').mockResolvedValue({
             id: 20,
-            emailAddress: 'test@example.com',
+            email_address: 'test@example.com',
             name: 'John Smith',
             username: 'johnsmith123',
         })

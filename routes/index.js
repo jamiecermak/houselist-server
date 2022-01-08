@@ -4,6 +4,7 @@ const { AppErrorHandler } = require('../middleware/AppErrorHandler')
 const { PathNotFoundHandler } = require('../middleware/PathNotFoundHandler')
 const { AuthenticationRoutes } = require('./AuthenticationRoutes')
 const bodyParser = require('body-parser')
+const { UserRoutes } = require('./UserRoutes')
 
 /**
  * Main Houselist Route Handler
@@ -18,6 +19,7 @@ function HouselistApp(app) {
     app.use(bodyParser.json())
 
     app.use('/auth', AuthenticationRoutes)
+    app.use('/user', UserRoutes)
 
     app.use(PathNotFoundHandler)
 

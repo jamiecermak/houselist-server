@@ -21,7 +21,6 @@ afterEach(() => {
 describe('generateJWT', () => {
     it('can generate a jwt for a key, userid and expiry', () => {
         const userId = 1
-        const expiryDate = '1d'
 
         const authorisation = new AuthorisationLib()
 

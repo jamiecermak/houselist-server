@@ -3,8 +3,25 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "test": "jest",
+        "test:e2e": "jest --runInBand --forceExit --selectProjects e2e",
+        "test": "jest --selectProjects test",
         "start": "serverless offline"
+    },
+    "jest": {
+        "projects": [
+            {
+                "displayName": "test",
+                "testMatch": [
+                    "<rootDir>/test/**/*.test.js"
+                ]
+            },
+            {
+                "displayName": "e2e",
+                "testMatch": [
+                    "<rootDir>/e2e/**/*.test.js"
+                ]
+            }
+        ]
     },
     "dependencies": {
         "@aws-sdk/client-rds": "^3.45.0",
@@ -23,6 +40,7 @@
         "serverless-http": "^2.7.0",
         "sharp": "^0.29.3",
         "uuid": "^8.3.2",
+        "winston": "^3.3.3",
         "yup": "^0.32.11"
     },
     "devDependencies": {

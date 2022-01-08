@@ -1,6 +1,8 @@
 module.exports = {
-    mockUserId: 1234,
     IsAuthorised: jest.fn().mockImplementation((req, res, next) => {
+        req.user = {
+            id: 1,
+        }
         next()
     }),
 }

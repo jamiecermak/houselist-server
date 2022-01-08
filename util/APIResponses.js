@@ -1,3 +1,4 @@
+const { Logger } = require('./Logger')
 const { ServerError } = require('./ServerErrors')
 
 class APIResponse {
@@ -39,6 +40,8 @@ class ErrorResponse extends APIResponse {
     }
 
     static fromException(exception) {
+        Logger.error(exception)
+
         if (
             exception.prototype instanceof ServerError ||
             exception instanceof ServerError
