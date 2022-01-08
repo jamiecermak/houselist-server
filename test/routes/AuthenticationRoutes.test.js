@@ -1,42 +1,30 @@
 const request = require('supertest')
 const { app } = require('../../handler')
-const { AuthenticationLib } = require('../../lib/Authentication')
-const sinon = require('sinon')
-const { ServerAuthError } = require('../../util/ServerErrors')
+const { database } = require('../../util/Database')
 
 describe('POST /auth/login', () => {
-    const authenticateUser = sinon.stub(
-        AuthenticationLib.prototype,
-        'authenticateUser',
-    )
-
-    beforeEach(() => {
-        authenticateUser.reset()
+    beforeAll(async () => {
+        await database.migrate.latest()
+        await database.seed.run()
     })
 
-    afterAll(() => {
-        authenticateUser.restore()
+    afterAll(async () => {
+        await database.migrate.rollback()
     })
 
     it('returns 200 with a JWT if the request succeeded', () => {
-        expect.assertions(3)
-
-        authenticateUser.resolves('some-token')
+        expect.assertions(2)
 
         return request(app)
             .post('/auth/login')
             .send({
-                username: 'test@example.com',
+                username: 'johnsmith@example.com',
                 password: 'password',
             })
             .then((res) => {
-                expect(
-                    authenticateUser.calledWith('test@example.com', 'password'),
-                ).toBeTruthy()
-
                 expect(res.body).toMatchObject({
                     data: {
-                        token: 'some-token',
+                        token: expect.any(String),
                     },
                 })
                 expect(res.statusCode).toEqual(200)
@@ -44,18 +32,15 @@ describe('POST /auth/login', () => {
     })
 
     it('returns an error if it could not sign in', () => {
-        expect.assertions(3)
-
-        authenticateUser.rejects(new ServerAuthError())
+        expect.assertions(2)
 
         return request(app)
             .post('/auth/login')
             .send({
-                username: 'test@example.com',
-                password: 'password',
+                username: 'johnsmith@example.com',
+                password: 'wrong-password',
             })
             .then((res) => {
-                expect(authenticateUser.calledOnce).toBeTruthy()
                 expect(res.statusCode).not.toEqual(200)
                 expect(res.body).toMatchObject({
                     success: false,
@@ -66,9 +51,7 @@ describe('POST /auth/login', () => {
     })
 
     it('returns an error if given an invalid payload', () => {
-        expect.assertions(3)
-
-        authenticateUser.rejects(new ServerAuthError())
+        expect.assertions(2)
 
         return request(app)
             .post('/auth/login')
@@ -76,7 +59,6 @@ describe('POST /auth/login', () => {
                 username: 'test@example.com',
             })
             .then((res) => {
-                expect(authenticateUser.notCalled).toBeTruthy()
                 expect(res.statusCode).not.toEqual(200)
                 expect(res.body).toMatchObject({
                     success: false,

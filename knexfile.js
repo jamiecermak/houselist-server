@@ -3,8 +3,9 @@ require('dotenv').config({
 })
 
 const BASE_CONFIG = {
-    client: 'postgresql',
+    client: 'pg',
     connection: process.env.HL_DB_CONNECTION_STRING,
+    searchPath: ['knex', 'public'],
     pool: {
         min: 2,
         max: 10,
@@ -16,7 +17,16 @@ const BASE_CONFIG = {
     },
 }
 
+const TEST_CONFIG = {
+    ...BASE_CONFIG,
+    connection: process.env.HL_TEST_DB_CONNECTION_STRING,
+    seeds: {
+        directory: './test/seeds',
+    },
+}
+
 module.exports = {
+    test: TEST_CONFIG,
     development: BASE_CONFIG,
     production: BASE_CONFIG,
 }

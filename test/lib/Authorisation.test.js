@@ -4,8 +4,9 @@ const tracker = mockDb.getTracker()
 const { AuthorisationLib } = require('../../lib/Authorisation')
 const jwt = require('jsonwebtoken')
 const { ServerAuthError } = require('../../util/ServerErrors')
+const Secrets = require('../../util/__mocks__/Secrets')
 
-const jwtSecret = 'a-totally-secret-string'
+jest.mock('../../util/Secrets')
 
 beforeEach(() => {
     mockDb.mock(database)
@@ -24,15 +25,11 @@ describe('generateJWT', () => {
 
         const authorisation = new AuthorisationLib()
 
-        const response = authorisation.generateJWT(
-            userId,
-            expiryDate,
-            jwtSecret,
-        )
+        const response = authorisation.generateJWT(userId)
 
         expect(typeof response).toEqual('string')
 
-        const jwtResponse = jwt.verify(response, jwtSecret)
+        const jwtResponse = jwt.verify(response, Secrets.HL_JWT_SECRET)
 
         expect(jwtResponse.userId).toEqual(userId)
     })
@@ -41,11 +38,13 @@ describe('generateJWT', () => {
 describe('validateJWT', () => {
     it('can validate a valid jwt', () => {
         const userId = 20
-        const encodedJwt = jwt.sign({ userId }, jwtSecret, { expiresIn: '1d' })
+        const encodedJwt = jwt.sign({ userId }, Secrets.HL_JWT_SECRET, {
+            expiresIn: '1d',
+        })
 
         const authorisation = new AuthorisationLib()
 
-        const response = authorisation.validateJWT(encodedJwt, jwtSecret)
+        const response = authorisation.validateJWT(encodedJwt)
 
         expect(response).toEqual(userId)
     })
@@ -57,7 +56,7 @@ describe('validateJWT', () => {
         const authorisation = new AuthorisationLib()
 
         try {
-            authorisation.validateJWT(invalidJWT, jwtSecret)
+            authorisation.validateJWT(invalidJWT)
         } catch (ex) {
             expect(ex).toBeInstanceOf(jwt.JsonWebTokenError)
             expect(ex.message).toEqual('jwt malformed')
@@ -74,7 +73,7 @@ describe('validateJWT', () => {
         const authorisation = new AuthorisationLib()
 
         try {
-            authorisation.validateJWT(invalidJWT, jwtSecret)
+            authorisation.validateJWT(invalidJWT)
         } catch (ex) {
             expect(ex).toBeInstanceOf(jwt.JsonWebTokenError)
             expect(ex.message).toEqual('invalid signature')
@@ -84,14 +83,14 @@ describe('validateJWT', () => {
     it('will not validate an expired jwt', () => {
         expect.assertions(1)
         const userId = 20
-        const invalidJWT = jwt.sign({ userId }, jwtSecret, {
+        const invalidJWT = jwt.sign({ userId }, Secrets.HL_JWT_SECRET, {
             expiresIn: -100000,
         })
 
         const authorisation = new AuthorisationLib()
 
         try {
-            authorisation.validateJWT(invalidJWT, jwtSecret)
+            authorisation.validateJWT(invalidJWT, Secrets.HL_JWT_SECRET)
         } catch (ex) {
             expect(ex).toBeInstanceOf(jwt.TokenExpiredError)
         }

@@ -3,6 +3,7 @@ const yup = require('yup')
 const { AuthenticationLib } = require('../lib/Authentication')
 const { SuccessResponse } = require('../util/APIResponses')
 const { ErrorHandler } = require('../middleware/ErrorHandler')
+const { AuthorisationLib } = require('../lib/Authorisation')
 const router = require('express').Router()
 
 router.post(
@@ -27,7 +28,10 @@ router.post(
         const { username, password } = req.payload.body
 
         const authentication = new AuthenticationLib()
-        const token = await authentication.authenticateUser(username, password)
+        const authorisation = new AuthorisationLib()
+
+        const userId = await authentication.authenticateUser(username, password)
+        const token = authorisation.generateJWT(userId)
 
         const response = new SuccessResponse({ token })
         response.send(res)

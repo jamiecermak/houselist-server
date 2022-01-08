@@ -1,10 +1,19 @@
 const { default: knex } = require('knex')
-const { HL_DB_CONNECTION_STRING } = require('./Secrets')
+const knexfile = require('../knexfile')
 
-const database = knex({
-    client: 'pg',
-    connection: HL_DB_CONNECTION_STRING,
-    searchPath: ['knex', 'public'],
-})
+function getConfig() {
+    switch (process.env.NODE_ENV) {
+        case 'test':
+            return knexfile.test
+        case 'development':
+            return knexfile.development
+        case 'production':
+            return knexfile.production
+        default:
+            throw new Error('Invalid Environment for Knex Config')
+    }
+}
+
+const database = knex(getConfig())
 
 module.exports = { database }

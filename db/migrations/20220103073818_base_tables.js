@@ -110,12 +110,12 @@ function up(knex) {
  */
 function down(knex) {
     return knex.schema
-        .dropTable('users')
-        .dropTable('lists')
-        .dropTable('list_members')
-        .dropTable('list_items')
-        .dropTable('user_fcm_tokens')
         .dropTable('password_reset_tokens')
+        .dropTable('user_fcm_tokens')
+        .dropTable('list_items')
+        .dropTable('list_members')
+        .dropTable('lists')
+        .dropTable('users')
 }
 
 module.exports = { up, down }
