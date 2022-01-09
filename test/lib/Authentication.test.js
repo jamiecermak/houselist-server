@@ -3,6 +3,8 @@ const mockDb = require('mock-knex')
 const tracker = mockDb.getTracker()
 const { AuthenticationLib } = require('../../lib/Authentication')
 const { ServerValidationError } = require('../../util/ServerErrors')
+const sinon = require('sinon')
+const { UsersLib } = require('../../lib/Users')
 
 beforeEach(() => {
     mockDb.mock(database)
@@ -121,5 +123,45 @@ describe('hashPassword', () => {
 
         expect(typeof result).toBe('string')
         expect(result).not.toEqual(password)
+    })
+})
+
+describe('signup', () => {
+    it('will call createUser', () => {
+        expect.assertions(4)
+
+        const authentication = new AuthenticationLib()
+
+        const hashPassword = jest
+            .spyOn(authentication, 'hashPassword')
+            .mockReturnValue('hashed-password')
+
+        const createUser = sinon
+            .stub(UsersLib.prototype, 'createUser')
+            .resolves(1)
+
+        return authentication
+            .signup(
+                'John Smith',
+                'johnsmith',
+                'johnsmith@example.com',
+                'password',
+            )
+            .then((result) => {
+                expect(hashPassword).toBeCalledWith('password')
+                expect(
+                    createUser.calledWith(
+                        'John Smith',
+                        'johnsmith',
+                        'johnsmith@example.com',
+                        'hashed-password',
+                    ),
+                ).toBeTruthy()
+                expect(typeof result).toEqual('number')
+                expect(result).toEqual(1)
+            })
+            .finally(() => {
+                createUser.restore()
+            })
     })
 })

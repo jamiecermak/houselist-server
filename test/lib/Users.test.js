@@ -399,3 +399,123 @@ describe('getUsersByIds', () => {
         })
     })
 })
+
+describe('getUserIdByEmailAddress', () => {
+    it('will return a user id if the user exists', () => {
+        expect.assertions(1)
+
+        const emailAddress = 'johnsmith@example.com'
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: 1,
+                },
+            ])
+        })
+
+        const users = new UsersLib()
+
+        return users.getUserIdByEmailAddress(emailAddress).then((userId) => {
+            expect(userId).toEqual(1)
+        })
+    })
+
+    it('will throw an error if the user does not exist', () => {
+        expect.assertions(1)
+
+        const emailAddress = 'johnsmith@example.com'
+
+        tracker.on('query', (query) => {
+            query.response([])
+        })
+
+        const users = new UsersLib()
+
+        return users.getUserIdByEmailAddress(emailAddress).catch((ex) => {
+            expect(ex).toBeInstanceOf(ServerValidationError)
+        })
+    })
+})
+
+describe('createUser', () => {
+    it('will create a new user', () => {
+        const users = new UsersLib()
+
+        tracker.on('query', (query) => {
+            query.response([20])
+        })
+
+        const userEmailAddressExists = jest
+            .spyOn(users, 'userEmailAddressExists')
+            .mockResolvedValue(false)
+
+        return users
+            .createUser(
+                'John Smith',
+                'johnsmith',
+                'johnsmith@example.com',
+                'password',
+            )
+            .then((result) => {
+                expect(userEmailAddressExists).toHaveBeenCalledWith(
+                    'johnsmith@example.com',
+                )
+                expect(typeof result).toEqual('number')
+                expect(result).toEqual(20)
+            })
+    })
+
+    it('will fail if the user email address already exists', () => {
+        const users = new UsersLib()
+
+        jest.spyOn(users, 'userEmailAddressExists').mockResolvedValue(true)
+
+        return users
+            .createUser(
+                'John Smith',
+                'johnsmith',
+                'johnsmith@example.com',
+                'password',
+            )
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(ServerValidationError)
+                expect(ex.message).toContain(
+                    'Invalid Request (User already exists)',
+                )
+            })
+    })
+})
+
+describe('userEmailAddressExists', () => {
+    it('will return true if the user exists', () => {
+        const users = new UsersLib()
+
+        const getUserIdByEmailAddress = jest
+            .spyOn(users, 'getUserIdByEmailAddress')
+            .mockResolvedValue(1)
+
+        return users
+            .userEmailAddressExists('johnsmith@example.com')
+            .then((result) => {
+                expect(getUserIdByEmailAddress).toHaveBeenCalledWith(
+                    'johnsmith@example.com',
+                )
+                expect(result).toEqual(true)
+            })
+    })
+
+    it('will return false if the user does not exist', () => {
+        const users = new UsersLib()
+
+        jest.spyOn(users, 'getUserIdByEmailAddress').mockRejectedValue(
+            new ServerValidationError(),
+        )
+
+        return users
+            .userEmailAddressExists('johnsmith@example.com')
+            .then((result) => {
+                expect(result).toEqual(false)
+            })
+    })
+})
