@@ -8,6 +8,11 @@ const { AuthenticationLib } = require('../lib/Authentication')
 const { ServerValidationError } = require('../util/ServerErrors')
 const router = require('express').Router()
 
+/**
+ * GET /user
+ *
+ * Get current authenticated user information
+ */
 router.get(
     '',
     IsAuthorised,
@@ -21,6 +26,12 @@ router.get(
     }),
 )
 
+/**
+ * POST /user/change_password
+ *
+ * Change the current authenticated users password
+ * with the current password and new password
+ */
 router.post(
     '/change_password',
     IsAuthorised,

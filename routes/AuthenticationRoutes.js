@@ -6,6 +6,11 @@ const { ErrorHandler } = require('../middleware/ErrorHandler')
 const { AuthorisationLib } = require('../lib/Authorisation')
 const router = require('express').Router()
 
+/**
+ * POST /auth/login
+ *
+ * Sign in with a Username and Password
+ */
 router.post(
     '/login',
     PayloadValidator(
@@ -38,6 +43,11 @@ router.post(
     }),
 )
 
+/**
+ * POST /auth/signup
+ *
+ * Signup to Houselist with a Username, Email Address, Username and Password
+ */
 router.post(
     '/signup',
     PayloadValidator(

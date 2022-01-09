@@ -1,5 +1,12 @@
 const { ServerValidationError } = require('../util/ServerErrors')
 
+/**
+ * Validate a Request against a Yup Shape Object
+ *
+ * @param {object} shape Yup Shape Payload
+ * @param {object} param1 Options
+ * @returns
+ */
 function PayloadValidator(shape, { path = 'body', showMessage = false } = {}) {
     return (req, res, next) => {
         try {

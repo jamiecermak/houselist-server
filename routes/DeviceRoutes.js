@@ -6,6 +6,11 @@ const yup = require('yup')
 const { FirebaseLib } = require('../lib/Firebase')
 const router = require('express').Router()
 
+/**
+ * POST /device/token
+ *
+ * Register a new FCM Device Token for Notifications
+ */
 router.post(
     '/token',
     IsAuthorised,

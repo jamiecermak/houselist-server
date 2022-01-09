@@ -7,6 +7,11 @@ const { ListsLib } = require('../lib/Lists')
 const { ListMembersLib } = require('../lib/ListMembers')
 const router = require('express').Router()
 
+/**
+ * GET /list
+ *
+ * Get all lists assigned to the authenticated user
+ */
 router.get(
     '',
     IsAuthorised,
@@ -20,6 +25,11 @@ router.get(
     }),
 )
 
+/**
+ * POST /list
+ *
+ * Create a new list
+ */
 router.post(
     '',
     IsAuthorised,

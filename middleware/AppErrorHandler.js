@@ -1,5 +1,14 @@
 const { ErrorResponse } = require('../util/APIResponses')
 
+/**
+ * Express Error Handler
+ *
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 function AppErrorHandler(err, req, res, next) {
     if (req.headersSent) {
         return next(err)

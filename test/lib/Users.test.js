@@ -1,7 +1,6 @@
 const { database } = require('../../util/Database')
 const { UsersLib } = require('../../lib/Users')
 const mockDb = require('mock-knex')
-const bcrypt = require('bcrypt')
 const sinon = require('sinon')
 const { UserProfileImagesLib } = require('../../lib/UserProfileImages')
 const tracker = mockDb.getTracker()

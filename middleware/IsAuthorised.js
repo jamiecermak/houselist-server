@@ -1,6 +1,14 @@
 const { AuthorisationLib } = require('../lib/Authorisation')
 const { ServerAuthError } = require('../util/ServerErrors')
 
+/**
+ * Check whether a Request is Authorised
+ *
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 async function IsAuthorised(req, res, next) {
     const authHeader = req.get('Authorization')
 
