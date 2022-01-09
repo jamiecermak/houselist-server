@@ -7,6 +7,19 @@ const { ListsLib } = require('../lib/Lists')
 const { ListMembersLib } = require('../lib/ListMembers')
 const router = require('express').Router()
 
+router.get(
+    '',
+    IsAuthorised,
+    ErrorHandler(async (req, res) => {
+        const lists = new ListsLib()
+
+        const userLists = await lists.getListsForUser(req.user.id)
+
+        const response = new SuccessResponse(userLists)
+        response.send(res)
+    }),
+)
+
 router.post(
     '',
     IsAuthorised,
