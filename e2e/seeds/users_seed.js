@@ -6,7 +6,6 @@ exports.seed = function (knex) {
             // Inserts seed entries
             return knex('users').insert([
                 {
-                    id: 1,
                     name: 'John Smith',
                     email_address: 'johnsmith@example.com',
                     username: 'johnsmith',
@@ -17,7 +16,6 @@ exports.seed = function (knex) {
                     profile_image_key: null,
                 },
                 {
-                    id: 2,
                     name: 'Jane Doe',
                     email_address: 'janedoe@example.com',
                     username: 'janedoe',
@@ -28,7 +26,6 @@ exports.seed = function (knex) {
                     profile_image_key: null,
                 },
                 {
-                    id: 3,
                     name: 'Tim Apple',
                     email_address: 'timapple@example.com',
                     username: 'timapple',

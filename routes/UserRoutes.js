@@ -59,7 +59,19 @@ router.post(
             )
         }
 
-        await users.setPassword(req.user.id, new_password)
+        const oldHashedPassword = await users.getPassword(req.user.id)
+
+        if (authentication.validatePassword(new_password, oldHashedPassword)) {
+            throw new ServerValidationError(
+                'New Password is not different from Old Password',
+                'Your New Password must be different from your old password',
+            )
+        }
+
+        // Hash the new Password
+        const hashedPassword = authentication.hashPassword(new_password)
+
+        await users.setPassword(req.user.id, hashedPassword)
 
         const response = new SuccessResponse()
         response.send(res)

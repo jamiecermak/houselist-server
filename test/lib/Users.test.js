@@ -58,40 +58,6 @@ describe('setPassword', () => {
 
         return user.setPassword(userId, newPassword)
     })
-
-    it('will not change the password for the user if it is the same', () => {
-        expect.assertions(4)
-
-        const userId = 1
-        const newPassword = 'new-password'
-        const dbPassword = bcrypt.hashSync('new-password', 12)
-
-        tracker.on('query', (query, step) => {
-            ;[
-                () => {
-                    expect(query.method).toEqual('first')
-                    query.response([
-                        {
-                            id: 1,
-                            password: dbPassword,
-                        },
-                    ])
-                },
-            ][step - 1]()
-        })
-
-        const users = new UsersLib()
-
-        return users.setPassword(userId, newPassword).catch((ex) => {
-            expect(ex).toBeInstanceOf(ServerValidationError)
-            expect(ex.message).toContain(
-                'New Password is not different from Old Password',
-            )
-            expect(ex.humanMessage).toContain(
-                'Your New Password must be different from your old password',
-            )
-        })
-    })
 })
 
 describe('getActiveUserById', () => {

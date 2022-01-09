@@ -38,6 +38,44 @@ router.post(
     }),
 )
 
+router.post(
+    '/signup',
+    PayloadValidator(
+        yup
+            .object()
+            .shape({
+                name: yup
+                    .string()
+                    .max(255, 'Name must be 255 characters or less')
+                    .required('Name is required'),
+                email_address: yup
+                    .string()
+                    .email('Invalid Email Address')
+                    .required('Email address is required'),
+                username: yup
+                    .string()
+                    .max(255, 'Username must be 255 characters or less')
+                    .required('Username is required'),
+                password: yup
+                    .string()
+                    .max(255, 'Password must be 255 characters or less')
+                    .required('Password is required'),
+            })
+            .noUnknown(true, 'Unknown options')
+            .strict(true),
+    ),
+    ErrorHandler(async (req, res) => {
+        const { username, password, name, email_address } = req.payload.body
+
+        const authentication = new AuthenticationLib()
+
+        await authentication.signup(name, username, email_address, password)
+
+        const response = new SuccessResponse()
+        response.send(res)
+    }),
+)
+
 module.exports = {
     AuthenticationRoutes: router,
 }
