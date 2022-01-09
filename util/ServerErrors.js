@@ -1,3 +1,5 @@
+const { Logger } = require('./Logger')
+
 class ServerError extends Error {
     statusCode = 500
     humanMessage = ''
@@ -75,6 +77,8 @@ class ServerDatabaseError extends ServerError {
             'An unexpected error occurred. Please try again.',
             null,
         )
+
+        Logger.error(`Database Error: ${exception.message}`)
 
         this.stack = exception.stack
     }

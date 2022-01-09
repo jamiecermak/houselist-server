@@ -21,7 +21,7 @@ const TEST_CONFIG = {
     ...BASE_CONFIG,
     connection: process.env.HL_TEST_DB_CONNECTION_STRING,
     seeds: {
-        directory: './test/seeds',
+        directory: './e2e/seeds',
     },
 }
 
