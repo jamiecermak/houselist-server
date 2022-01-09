@@ -6,6 +6,7 @@ const { AuthenticationRoutes } = require('./AuthenticationRoutes')
 const bodyParser = require('body-parser')
 const { UserRoutes } = require('./UserRoutes')
 const { DeviceRoutes } = require('./DeviceRoutes')
+const { ListRoutes } = require('./ListRoutes')
 
 /**
  * Main Houselist Route Handler
@@ -22,6 +23,7 @@ function HouselistApp(app) {
     app.use('/auth', AuthenticationRoutes)
     app.use('/user', UserRoutes)
     app.use('/device', DeviceRoutes)
+    app.use('/list', ListRoutes)
 
     app.use(PathNotFoundHandler)
 

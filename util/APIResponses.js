@@ -40,7 +40,7 @@ class ErrorResponse extends APIResponse {
     }
 
     static fromException(exception) {
-        Logger.error(exception)
+        Logger.error(exception.message)
 
         if (
             exception.prototype instanceof ServerError ||

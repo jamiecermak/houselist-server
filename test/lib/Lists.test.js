@@ -27,11 +27,7 @@ describe('createList', () => {
         tracker.on('query', (query) => {
             expect(query.method).toEqual('insert')
 
-            query.response([
-                {
-                    id: 1,
-                },
-            ])
+            query.response([1])
         })
 
         const lists = new ListsLib()
@@ -52,11 +48,7 @@ describe('createList', () => {
         const listEmoji = null
 
         tracker.on('query', (query) => {
-            query.response([
-                {
-                    id: 1,
-                },
-            ])
+            query.response([1])
         })
 
         const lists = new ListsLib()
@@ -76,11 +68,7 @@ describe('createList', () => {
         const listDescription = "It's a test list"
 
         tracker.on('query', (query) => {
-            query.response([
-                {
-                    id: 1,
-                },
-            ])
+            query.response([1])
         })
 
         const lists = new ListsLib()
@@ -327,5 +315,53 @@ describe('isListOwner', () => {
         return lists
             .isListOwner(listId, userId)
             .then((isOwner) => expect(isOwner).toEqual(false))
+    })
+})
+
+describe('getListsForUser', () => {
+    it('will return an array of lists for a user id', () => {
+        expect.assertions(1)
+
+        const userId = 10
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: 1,
+                    name: 'Test List',
+                    description: 'Test Description',
+                    emoji: '😍',
+                },
+            ])
+        })
+
+        const lists = new ListsLib()
+
+        return lists.getListsForUser(userId).then((response) => {
+            expect(response).toEqual([
+                {
+                    id: 1,
+                    name: 'Test List',
+                    description: 'Test Description',
+                    emoji: '😍',
+                },
+            ])
+        })
+    })
+
+    it('will return an empty array if there are no lists', () => {
+        expect.assertions(1)
+
+        const userId = 10
+
+        tracker.on('query', (query) => {
+            query.response([])
+        })
+
+        const lists = new ListsLib()
+
+        return lists.getListsForUser(userId).then((response) => {
+            expect(response).toEqual([])
+        })
     })
 })

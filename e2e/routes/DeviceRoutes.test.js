@@ -28,7 +28,7 @@ describe('POST /device/token', () => {
     })
 
     it('will add a firebase device token to a user and return 200', () => {
-        expect.assertions(3)
+        expect.assertions(4)
 
         return request(app)
             .post('/device/token')
