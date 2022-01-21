@@ -22,22 +22,39 @@ afterEach(() => {
 
 describe('addFCMTokenToUser', () => {
     it('will create a fcm token record for a user', () => {
+        expect.assertions(2)
+
         const userId = 20
         const fcmToken = 'fcm-token'
+        const deviceToken = 'device-token'
+        const deviceName = 'Device Name'
 
         tracker.on('query', (query) => {
+            expect(query.bindings).toEqual([
+                userId,
+                deviceToken,
+                deviceName,
+                1,
+                fcmToken,
+            ])
             expect(query.method).toEqual('insert')
             query.response()
         })
 
         const firebase = new FirebaseLib()
 
-        return firebase.addFCMTokenToUser(userId, fcmToken)
+        return firebase.addFCMTokenToUser(
+            userId,
+            fcmToken,
+            deviceToken,
+            deviceName,
+        )
     })
 
     it('will throw an exception if the record fails to insert', () => {
         const userId = 20
         const fcmToken = 'fcm-token'
+        const deviceToken = 'device-token'
 
         tracker.on('query', (query) => {
             query.reject(new Error('test'))
@@ -45,10 +62,12 @@ describe('addFCMTokenToUser', () => {
 
         const firebase = new FirebaseLib()
 
-        return firebase.addFCMTokenToUser(userId, fcmToken).catch((ex) => {
-            expect(ex).toBeInstanceOf(ServerDatabaseError)
-            expect(ex.message).toContain('test')
-        })
+        return firebase
+            .addFCMTokenToUser(userId, fcmToken, deviceToken)
+            .catch((ex) => {
+                expect(ex).toBeInstanceOf(ServerDatabaseError)
+                expect(ex.message).toContain('test')
+            })
     })
 })
 

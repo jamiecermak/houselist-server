@@ -32,7 +32,11 @@ describe('POST /device/token', () => {
 
         return request(app)
             .post('/device/token')
-            .send({ token: 'test-token' })
+            .send({
+                token: 'test-token',
+                deviceId: 'device-id',
+                deviceName: 'device-name',
+            })
             .then((res) => {
                 expect(res.statusCode).toEqual(200)
                 expect(res.body).toMatchObject({

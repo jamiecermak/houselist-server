@@ -19,16 +19,23 @@ router.post(
             .object()
             .shape({
                 token: yup.string().required('Token is required'),
+                deviceId: yup.string().required('Device ID is required'),
+                deviceName: yup.string().required('Device Name is required'),
             })
             .noUnknown(true, 'Unknown options')
             .strict(true),
     ),
     ErrorHandler(async (req, res) => {
-        const { token } = req.payload.body
+        const { token, deviceId, deviceName } = req.payload.body
 
         const firebase = new FirebaseLib()
 
-        await firebase.addFCMTokenToUser(req.user.id, token)
+        await firebase.addFCMTokenToUser(
+            req.user.id,
+            token,
+            deviceId,
+            deviceName,
+        )
 
         const response = new SuccessResponse()
         response.send(res)
