@@ -1,14 +1,14 @@
 # Houselist List Routes
 
-## GET /list
+## GET /list :fist:
 
 Get all lists the Authenticated User is a member of.
 
-## POST /list
+## POST /list :fist:
 
 Create a new list where the Authenticated User is the owner.
 
-## GET /list/:listId
+## GET /list/:listId :fist:
 
 Get information about a list
 

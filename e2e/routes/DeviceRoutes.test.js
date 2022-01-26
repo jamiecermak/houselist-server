@@ -7,12 +7,12 @@ const { database } = require('../../util/Database')
 jest.mock('../../middleware/IsAuthorised')
 
 describe('POST /device/token', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 
@@ -75,11 +75,19 @@ describe('POST /device/token', () => {
 
         return request(app)
             .post('/device/token')
-            .send({ token: 'test-token' })
+            .send({
+                token: 'test-token',
+                deviceId: 'device-id',
+                deviceName: 'device-name',
+            })
             .then(() => {
                 return request(app)
                     .post('/device/token')
-                    .send({ token: 'test-token' })
+                    .send({
+                        token: 'test-token',
+                        deviceId: 'device-id',
+                        deviceName: 'device-name',
+                    })
             })
             .then(() => {
                 const firebase = new FirebaseLib()

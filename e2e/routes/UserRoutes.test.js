@@ -6,12 +6,12 @@ const { database } = require('../../util/Database')
 jest.mock('../../middleware/IsAuthorised')
 
 describe('GET /user', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 
@@ -47,12 +47,12 @@ describe('GET /user', () => {
 })
 
 describe('POST /user/change_password', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 

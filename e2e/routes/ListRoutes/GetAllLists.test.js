@@ -8,12 +8,12 @@ const { database } = require('../../../util/Database')
 jest.mock('../../../middleware/IsAuthorised')
 
 describe('GET /list', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 
@@ -59,6 +59,21 @@ describe('GET /list', () => {
                             ],
                         })
                     })
+            })
+    })
+
+    it('will return an empty array if none found', () => {
+        expect.assertions(2)
+
+        return request(app)
+            .get('/list')
+            .then((res) => {
+                expect(res.statusCode).toEqual(200)
+                expect(res.body).toEqual({
+                    success: true,
+                    message: null,
+                    data: [],
+                })
             })
     })
 })

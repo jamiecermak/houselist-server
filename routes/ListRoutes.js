@@ -5,6 +5,7 @@ const { PayloadValidator } = require('../middleware/PayloadValidator')
 const yup = require('yup')
 const { ListsLib } = require('../lib/Lists')
 const { ListMembersLib } = require('../lib/ListMembers')
+const { ServerNotFoundError } = require('../util/ServerErrors')
 const router = require('express').Router()
 
 /**
@@ -69,6 +70,44 @@ router.post(
         await listMembers.addMemberToList(req.user.id, listId, req.user.id)
 
         const response = new SuccessResponse({ id: listId })
+        response.send(res)
+    }),
+)
+
+/**
+ * GET /list/:listId
+ *
+ * Get information about a list
+ */
+router.get(
+    '/:listId',
+    IsAuthorised,
+    PayloadValidator(
+        yup
+            .object()
+            .shape({
+                listId: yup.number().required('List ID is required'),
+            })
+            .noUnknown(true, 'Unknown options'),
+        {
+            path: 'params',
+        },
+    ),
+    ErrorHandler(async (req, res) => {
+        const { listId } = req.payload.params
+
+        const lists = new ListsLib()
+        const listMembers = new ListMembersLib()
+
+        const isListMember = await listMembers.isListMember(listId, req.user.id)
+
+        if (!isListMember) {
+            throw new ServerNotFoundError('List')
+        }
+
+        const listData = await lists.getList(listId)
+
+        const response = new SuccessResponse(listData)
         response.send(res)
     }),
 )

@@ -4,6 +4,7 @@ const { ListsLib } = require('../../lib/Lists')
 const {
     ServerValidationError,
     ServerPermissionsError,
+    ServerNotFoundError,
 } = require('../../util/ServerErrors')
 const tracker = mockDb.getTracker()
 
@@ -362,6 +363,52 @@ describe('getListsForUser', () => {
 
         return lists.getListsForUser(userId).then((response) => {
             expect(response).toEqual([])
+        })
+    })
+})
+
+describe('getList', () => {
+    it('will return list information', () => {
+        expect.assertions(1)
+
+        const listId = 10
+
+        tracker.on('query', (query) => {
+            query.response([
+                {
+                    id: listId,
+                    name: 'Test List',
+                    description: 'Test Description',
+                    emoji: '😍',
+                },
+            ])
+        })
+
+        const lists = new ListsLib()
+
+        return lists.getList(listId).then((response) => {
+            expect(response).toEqual({
+                id: listId,
+                name: 'Test List',
+                description: 'Test Description',
+                emoji: '😍',
+            })
+        })
+    })
+
+    it('will throw a not found error if the list does not exist', () => {
+        expect.assertions(1)
+
+        const listId = 10
+
+        tracker.on('query', (query) => {
+            query.response([])
+        })
+
+        const lists = new ListsLib()
+
+        return lists.getList(listId).catch((ex) => {
+            expect(ex).toBeInstanceOf(ServerNotFoundError)
         })
     })
 })

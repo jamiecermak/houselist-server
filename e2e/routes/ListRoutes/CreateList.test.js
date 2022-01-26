@@ -7,12 +7,12 @@ const { database } = require('../../../util/Database')
 jest.mock('../../../middleware/IsAuthorised')
 
 describe('POST /list', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 

@@ -1,6 +1,6 @@
 # Houselist User Routes
 
-## GET /user
+## GET /user :fist:
 
 Get information about the current Authenticated User.
 
@@ -8,7 +8,7 @@ Get information about the current Authenticated User.
 
 Update the current Authenticated User's information.
 
-## POST /user/change_password
+## POST /user/change_password :fist:
 
 Change the current Authenticated User's password.
 

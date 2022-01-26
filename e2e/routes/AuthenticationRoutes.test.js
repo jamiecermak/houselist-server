@@ -4,12 +4,12 @@ const { UsersLib } = require('../../lib/Users')
 const { database } = require('../../util/Database')
 
 describe('POST /auth/login', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 
@@ -71,12 +71,12 @@ describe('POST /auth/login', () => {
 })
 
 describe('POST /auth/signup', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
         await database.migrate.rollback()
     })
 
