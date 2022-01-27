@@ -122,4 +122,28 @@ describe('PayloadValidator Middleware', () => {
             },
         })
     })
+
+    it('will allow more than 1 call to the same path', () => {
+        const yupShape1 = yup.object().shape({
+            testVar1: yup.string(),
+        })
+
+        const yupShape2 = yup.object().shape({
+            testVar2: yup.string(),
+        })
+
+        req.body = { testVar1: 'some-test', testVar2: '123-456' }
+
+        const payloadValidator1 = PayloadValidator(yupShape1)
+
+        payloadValidator1(req, {}, next)
+
+        const payloadValidator2 = PayloadValidator(yupShape2)
+
+        payloadValidator2(req, {}, next)
+
+        expect(req.payload).toEqual({
+            body: { testVar1: 'some-test', testVar2: '123-456' },
+        })
+    })
 })

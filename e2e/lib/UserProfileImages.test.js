@@ -15,6 +15,15 @@ beforeAll(() => {
     }
 })
 
+afterAll(() => {
+    if (fs.existsSync(testOutputPath)) {
+        fs.rmSync(testOutputPath, {
+            recursive: true,
+            force: true,
+        })
+    }
+})
+
 describe('transformImage', () => {
     it('will transform a jpeg buffer', () => {
         expect.assertions(1)
