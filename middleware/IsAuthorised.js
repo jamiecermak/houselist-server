@@ -2,7 +2,7 @@ const { AuthorisationLib } = require('../lib/Authorisation')
 const { ServerAuthError } = require('../util/ServerErrors')
 
 /**
- * Check whether a Request is Authorised
+ * Check whether a Request is Authorised and set req.user.id to the Authorised User ID
  *
  * @param {*} req
  * @param {*} res
