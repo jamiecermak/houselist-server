@@ -8,6 +8,6 @@ Get all members of the list
 
 Add a new member to a list
 
-## DELETE /list/:listId/member/:userId
+## DELETE /list/:listId/member/:userId :fist:
 
 Delete a member from a list

@@ -8,6 +8,7 @@ const { UserRoutes } = require('./UserRoutes')
 const { DeviceRoutes } = require('./DeviceRoutes')
 const { ListRoutes } = require('./ListRoutes')
 const { ListMemberRoutes } = require('./ListMemberRoutes')
+const { ListItemRoutes } = require('./ListItemRoutes')
 
 /**
  * Main Houselist Route Handler
@@ -26,6 +27,7 @@ function HouselistApp(app) {
     app.use('/device', DeviceRoutes)
     app.use('/list', ListRoutes)
     app.use('/list', ListMemberRoutes)
+    app.use('/list', ListItemRoutes)
 
     app.use(PathNotFoundHandler)
 

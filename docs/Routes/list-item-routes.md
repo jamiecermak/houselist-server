@@ -4,7 +4,7 @@
 
 Get all items of a list
 
-## POST /list/:listId/items
+## POST /list/:listId/items :fist:
 
 Add a new item to a list
 
@@ -20,6 +20,6 @@ Update information about an item on a list
 
 Delete an item from a list
 
-## GET /list/:listId/items/:listItemId/resolve
+## GET /list/:listId/items/:listItemId/resolve :fist:
 
 Resolve an item on a list
