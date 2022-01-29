@@ -9,6 +9,16 @@ const { ListOwnerValidator } = require('../middleware/ListOwnerValidator')
 const { UsersLib } = require('../lib/Users')
 const router = require('express').Router()
 
+const listMembers = new ListMembersLib()
+const users = new UsersLib()
+
+async function getPopulatedMembers(listId) {
+    const memberList = await listMembers.getMembersOfList(listId)
+    const populatedUsers = await users.getUsersByIds(memberList)
+
+    return populatedUsers
+}
+
 /**
  * GET /list/:listId/members
  *
@@ -21,13 +31,9 @@ router.get(
     ErrorHandler(async (req, res) => {
         const { listId } = req.payload.params
 
-        const listMembers = new ListMembersLib()
-        const users = new UsersLib()
+        const memberList = await getPopulatedMembers(listId)
 
-        const memberList = await listMembers.getMembersOfList(listId)
-        const populatedUsers = await users.getUsersByIds(memberList)
-
-        const response = new SuccessResponse(populatedUsers)
+        const response = new SuccessResponse(memberList)
         response.send(res)
     }),
 )
@@ -53,13 +59,9 @@ router.post(
         const { listId } = req.payload.params
         const { User_id } = req.payload.body
 
-        const listMembers = new ListMembersLib()
+        await listMembers.addMemberToList(listId, req.user.id, User_id)
 
-        const memberList = await listMembers.addMemberToList(
-            req.user.id,
-            listId,
-            User_id,
-        )
+        const memberList = await getPopulatedMembers(listId)
 
         const response = new SuccessResponse(memberList)
         response.send(res)
@@ -71,29 +73,24 @@ router.post(
  *
  * Add a new member to the list
  */
-router.post(
-    '/:listId/members',
+router.delete(
+    '/:listId/members/:userId',
     IsAuthorised,
     PayloadValidator(
-        yup
-            .object()
-            .shape({
-                User_id: yup.number().required('User_id is required'),
-            })
-            .noUnknown(true, 'Unknown options'),
+        yup.object().shape({
+            userId: yup.number().required('User ID is required'),
+        }),
+        {
+            path: 'params',
+        },
     ),
     ListOwnerValidator(),
     ErrorHandler(async (req, res) => {
-        const { listId } = req.payload.params
-        const { User_id } = req.payload.body
+        const { listId, userId } = req.payload.params
 
-        const listMembers = new ListMembersLib()
+        await listMembers.removeMemberForList(listId, req.user.id, userId)
 
-        const memberList = await listMembers.removeMemberForList(
-            req.user.id,
-            listId,
-            User_id,
-        )
+        const memberList = await getPopulatedMembers(listId)
 
         const response = new SuccessResponse(memberList)
         response.send(res)

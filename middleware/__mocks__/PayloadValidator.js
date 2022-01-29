@@ -7,7 +7,14 @@ module.exports = {
                     req.payload = {}
                 }
 
-                req.payload[path] = req[path]
+                if (!Object.keys(req.payload).includes(path)) {
+                    req.payload[path] = {}
+                }
+
+                req.payload[path] = {
+                    ...req.payload[path],
+                    ...req[path],
+                }
 
                 next()
             }

@@ -3,11 +3,17 @@ const { app } = require('../../../handler')
 const { ListMembersLib } = require('../../../lib/ListMembers')
 const { ListsLib } = require('../../../lib/Lists')
 const { IsAuthorised } = require('../../../middleware/IsAuthorised')
+const {
+    ListMemberValidator,
+} = require('../../../middleware/ListMemberValidator')
 const { database } = require('../../../util/Database')
 
 jest.mock('../../../middleware/IsAuthorised')
+jest.mock('../../../middleware/ListMemberValidator')
 
 describe('GET /list/:listId', () => {
+    const lists = new ListsLib()
+
     beforeEach(async () => {
         await database.migrate.latest()
         await database.seed.run()
@@ -17,20 +23,19 @@ describe('GET /list/:listId', () => {
         await database.migrate.rollback()
     })
 
-    it('will call IsAuthorised', () => {
-        expect.assertions(1)
+    it('will call middleware', () => {
+        expect.assertions(2)
 
         return request(app)
             .get('/list/1')
             .then(() => {
                 expect(IsAuthorised).toBeCalled()
+                expect(ListMemberValidator).toBeCalled()
             })
     })
 
     it('will return 200 and list information', () => {
         expect.assertions(2)
-
-        const lists = new ListsLib()
 
         return lists
             .createList(1, 'Test List', 'Test Description', '😍')
@@ -60,27 +65,6 @@ describe('GET /list/:listId', () => {
             })
     })
 
-    it('will return 404 if user is not a member of list', () => {
-        expect.assertions(2)
-
-        const lists = new ListsLib()
-
-        return lists
-            .createList(1, 'Test List', 'Test Description', '😍')
-            .then((listId) => {
-                return request(app)
-                    .get(`/list/${listId}`)
-                    .then((res) => {
-                        expect(res.statusCode).toEqual(404)
-                        expect(res.body).toEqual({
-                            success: false,
-                            message: 'The requested list does not exist.',
-                            data: null,
-                        })
-                    })
-            })
-    })
-
     it('will return 404 if the list is not found', () => {
         expect.assertions(2)
 
@@ -91,21 +75,6 @@ describe('GET /list/:listId', () => {
                 expect(res.body).toEqual({
                     success: false,
                     message: 'The requested list does not exist.',
-                    data: null,
-                })
-            })
-    })
-
-    it('will return 400 if non id is passed', () => {
-        expect.assertions(2)
-
-        return request(app)
-            .get('/list/notanid')
-            .then((res) => {
-                expect(res.statusCode).toEqual(400)
-                expect(res.body).toEqual({
-                    success: false,
-                    message: 'There was an issue processing your request.',
                     data: null,
                 })
             })

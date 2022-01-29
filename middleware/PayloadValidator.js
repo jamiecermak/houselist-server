@@ -20,7 +20,15 @@ function PayloadValidator(shape, { path = 'body', showMessage = false } = {}) {
                 req.payload = {}
             }
 
-            req.payload[path] = shape.validateSync(payload)
+            if (!Object.keys(req.payload).includes(path)) {
+                req.payload[path] = {}
+            }
+
+            req.payload[path] = {
+                ...req.payload[path],
+                ...shape.validateSync(payload),
+            }
+
             return next()
         } catch (ex) {
             return next(

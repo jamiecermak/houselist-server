@@ -4,13 +4,14 @@
     "description": "",
     "scripts": {
         "test:e2e": "jest --runInBand --forceExit --selectProjects e2e",
-        "test": "jest --selectProjects test",
+        "test": "jest --selectProjects unit",
+        "test:all": "jest --runInBand --forceExit",
         "start": "serverless offline"
     },
     "jest": {
         "projects": [
             {
-                "displayName": "test",
+                "displayName": "unit",
                 "testMatch": [
                     "<rootDir>/test/**/*.test.js"
                 ]

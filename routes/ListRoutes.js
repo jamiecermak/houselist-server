@@ -5,7 +5,7 @@ const { PayloadValidator } = require('../middleware/PayloadValidator')
 const yup = require('yup')
 const { ListsLib } = require('../lib/Lists')
 const { ListMembersLib } = require('../lib/ListMembers')
-const { ServerNotFoundError } = require('../util/ServerErrors')
+const { ListMemberValidator } = require('../middleware/ListMemberValidator')
 const router = require('express').Router()
 
 /**
@@ -67,7 +67,7 @@ router.post(
         )
 
         const listMembers = new ListMembersLib()
-        await listMembers.addMemberToList(req.user.id, listId, req.user.id)
+        await listMembers.addMemberToList(listId, req.user.id, req.user.id)
 
         const response = new SuccessResponse({ id: listId })
         response.send(res)
@@ -82,28 +82,11 @@ router.post(
 router.get(
     '/:listId',
     IsAuthorised,
-    PayloadValidator(
-        yup
-            .object()
-            .shape({
-                listId: yup.number().required('List ID is required'),
-            })
-            .noUnknown(true, 'Unknown options'),
-        {
-            path: 'params',
-        },
-    ),
+    ListMemberValidator(),
     ErrorHandler(async (req, res) => {
         const { listId } = req.payload.params
 
         const lists = new ListsLib()
-        const listMembers = new ListMembersLib()
-
-        const isListMember = await listMembers.isListMember(listId, req.user.id)
-
-        if (!isListMember) {
-            throw new ServerNotFoundError('List')
-        }
 
         const listData = await lists.getList(listId)
 

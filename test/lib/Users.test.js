@@ -60,10 +60,12 @@ describe('setPassword', () => {
 })
 
 describe('getActiveUserById', () => {
+    const users = new UsersLib()
+
+    const userId = 20
+
     it('will get information for an active user by id', () => {
         expect.assertions(6)
-
-        const userId = 20
 
         tracker.on('query', (query) => {
             expect(query.method).toEqual('first')
@@ -77,8 +79,6 @@ describe('getActiveUserById', () => {
             ])
         })
 
-        const users = new UsersLib()
-
         return users.getActiveUserById(userId).then((user) => {
             expect(typeof user).toEqual('object')
             expect(user.email_address).toEqual('test@example.com')
@@ -91,14 +91,10 @@ describe('getActiveUserById', () => {
     it('will return null if no user is found', () => {
         expect.assertions(4)
 
-        const userId = 20
-
         tracker.on('query', (query) => {
             expect(query.method).toEqual('first')
             query.response([])
         })
-
-        const users = new UsersLib()
 
         return users.getActiveUserById(userId).catch((ex) => {
             expect(ex).toBeInstanceOf(ServerNotFoundError)
@@ -109,11 +105,19 @@ describe('getActiveUserById', () => {
 })
 
 describe('updateUsersName', () => {
+    const users = new UsersLib()
+
+    const userId = 20
+    const userNewName = 'Tim Apple'
+
+    const getActiveUserById = jest.spyOn(users, 'getActiveUserById')
+
+    afterEach(() => {
+        getActiveUserById.mockReset()
+    })
+
     it('can update a users name', () => {
         expect.assertions(4)
-
-        const userId = 20
-        const userNewName = 'Tim Apple'
 
         tracker.on('query', (query) => {
             expect(query.method).toEqual('update')
@@ -125,16 +129,12 @@ describe('updateUsersName', () => {
             query.response()
         })
 
-        const users = new UsersLib()
-
-        const getActiveUserById = jest
-            .spyOn(users, 'getActiveUserById')
-            .mockResolvedValue({
-                id: 20,
-                email_address: 'test@example.com',
-                name: 'John Smith',
-                username: 'johnsmith123',
-            })
+        getActiveUserById.mockResolvedValue({
+            id: 20,
+            email_address: 'test@example.com',
+            name: 'John Smith',
+            username: 'johnsmith123',
+        })
 
         return users.updateUsersName(userId, userNewName).then(() => {
             expect(getActiveUserById.mock.calls[0][0]).toEqual(userId)
@@ -144,12 +144,9 @@ describe('updateUsersName', () => {
     it('will not update a user if the name is the same', () => {
         expect.assertions(3)
 
-        const userId = 20
         const userNewName = 'John Smith'
 
-        const users = new UsersLib()
-
-        jest.spyOn(users, 'getActiveUserById').mockResolvedValue({
+        getActiveUserById.mockResolvedValue({
             id: 20,
             email_address: 'test@example.com',
             name: 'John Smith',
@@ -170,16 +167,11 @@ describe('updateUsersName', () => {
     it('will throw an error if it can not update the user', () => {
         expect.assertions(2)
 
-        const userId = 20
-        const userNewName = 'Tim Apple'
-
         tracker.on('query', (query) => {
             query.reject(new Error('error 123'))
         })
 
-        const users = new UsersLib()
-
-        jest.spyOn(users, 'getActiveUserById').mockResolvedValue({
+        getActiveUserById.mockResolvedValue({
             id: 20,
             email_address: 'test@example.com',
             name: 'John Smith',
