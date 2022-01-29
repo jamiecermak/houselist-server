@@ -4,6 +4,7 @@ const { AuthenticationLib } = require('../lib/Authentication')
 const { SuccessResponse } = require('../util/APIResponses')
 const { ErrorHandler } = require('../middleware/ErrorHandler')
 const { AuthorisationLib } = require('../lib/Authorisation')
+const { onSignup } = require('../events/onSignup')
 const router = require('express').Router()
 
 /**
@@ -79,7 +80,14 @@ router.post(
 
         const authentication = new AuthenticationLib()
 
-        await authentication.signup(name, username, email_address, password)
+        const newUserId = await authentication.signup(
+            name,
+            username,
+            email_address,
+            password,
+        )
+
+        await onSignup(newUserId)
 
         const response = new SuccessResponse()
         response.send(res)

@@ -3,6 +3,9 @@ const { app } = require('../../handler')
 const { UsersLib } = require('../../lib/Users')
 const { database } = require('../../util/Database')
 
+jest.mock('../../events/onSignup')
+const { onSignup } = require('../../events/onSignup')
+
 describe('POST /auth/login', () => {
     beforeEach(async () => {
         await database.migrate.latest()
@@ -78,6 +81,7 @@ describe('POST /auth/signup', () => {
 
     afterEach(async () => {
         await database.migrate.rollback()
+        onSignup.mockClear()
     })
 
     it('returns 200 if the request succeeded', () => {
@@ -93,6 +97,22 @@ describe('POST /auth/signup', () => {
             })
             .then((res) => {
                 expect(res.statusCode).toEqual(200)
+            })
+    })
+
+    it('fires the onSignup event', () => {
+        expect.assertions(1)
+
+        return request(app)
+            .post('/auth/signup')
+            .send({
+                name: 'Garry Peters',
+                username: 'garrypeters',
+                email_address: 'garry@example.com',
+                password: 'some-password',
+            })
+            .then((res) => {
+                expect(onSignup).toHaveBeenCalledWith(4)
             })
     })
 

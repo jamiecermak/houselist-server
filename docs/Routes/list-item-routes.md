@@ -1,6 +1,6 @@
 # Houselist List Item Routes
 
-## GET /list/:listId/items
+## GET /list/:listId/items :fist:
 
 Get all items of a list
 
