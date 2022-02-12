@@ -18,7 +18,7 @@ router.post(
         yup
             .object()
             .shape({
-                username: yup
+                email_address: yup
                     .string()
                     .max(255, 'Username must be 255 characters or less')
                     .required('Password is required'),
@@ -31,12 +31,15 @@ router.post(
             .strict(true),
     ),
     ErrorHandler(async (req, res) => {
-        const { username, password } = req.payload.body
+        const { email_address, password } = req.payload.body
 
         const authentication = new AuthenticationLib()
         const authorisation = new AuthorisationLib()
 
-        const userId = await authentication.authenticateUser(username, password)
+        const userId = await authentication.authenticateUser(
+            email_address,
+            password,
+        )
         const token = authorisation.generateJWT(userId)
 
         const response = new SuccessResponse({ token })

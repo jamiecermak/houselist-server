@@ -26,10 +26,12 @@ function sendEmail(toName, toEmailAddress, subject, htmlContent) {
                 name: 'Houselist No-Reply',
                 email: Secrets.HL_FROM_EMAIL,
             },
-            to: {
-                name: toName,
-                email: toEmail,
-            },
+            to: [
+                {
+                    name: toName,
+                    email: toEmail,
+                },
+            ],
             subject,
             htmlContent,
         },

@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1643721461097" clover="3.2.0">
+  <project timestamp="1643721461097" name="All files">
+    <metrics statements="453" coveredstatements="437" conditionals="144" coveredconditionals="135" methods="94" coveredmethods="88" elements="691" coveredelements="660" complexity="0" loc="453" ncloc="453" packages="6" files="28" classes="28"/>
+    <package name="houselist-server">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="knexfile.js" path="/Users/jamiecermak/Projects/personal/houselist-server/knexfile.js">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="15" type="stmt"/>
+        <line num="5" count="15" type="stmt"/>
+        <line num="20" count="15" type="stmt"/>
+        <line num="28" count="15" type="stmt"/>
+      </file>
+    </package>
+    <package name="houselist-server.events">
+      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="onSignup.js" path="/Users/jamiecermak/Projects/personal/houselist-server/events/onSignup.js">
+        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="houselist-server.lib">
+      <metrics statements="264" coveredstatements="257" conditionals="82" coveredconditionals="79" methods="55" coveredmethods="53"/>
+      <file name="Authentication.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/Authentication.js">
+        <metrics statements="17" coveredstatements="16" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="37" count="3" type="stmt"/>
+        <line num="45" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="53" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="73" count="1" type="stmt"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="84" count="1" type="stmt"/>
+        <line num="88" count="1" type="stmt"/>
+      </file>
+      <file name="Authorisation.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/Authorisation.js">
+        <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="27" count="4" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="42" count="3" type="stmt"/>
+        <line num="43" count="3" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="57" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="65" count="2" type="stmt"/>
+      </file>
+      <file name="Firebase.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/Firebase.js">
+        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
+        <line num="57" count="3" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="82" count="2" type="stmt"/>
+        <line num="83" count="2" type="stmt"/>
+        <line num="84" count="2" type="stmt"/>
+        <line num="86" count="1" type="stmt"/>
+        <line num="91" count="1" type="stmt"/>
+      </file>
+      <file name="ForgotPassword.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/ForgotPassword.js">
+        <metrics statements="36" coveredstatements="35" conditionals="9" coveredconditionals="9" methods="7" coveredmethods="7"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+        <line num="41" count="3" type="stmt"/>
+        <line num="50" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="57" count="2" type="stmt"/>
+        <line num="58" count="2" type="stmt"/>
+        <line num="61" count="2" type="stmt"/>
+        <line num="68" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="74" count="1" type="stmt"/>
+        <line num="90" count="2" type="stmt"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="102" count="1" type="stmt"/>
+        <line num="113" count="3" type="stmt"/>
+        <line num="129" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="130" count="1" type="stmt"/>
+        <line num="137" count="2" type="stmt"/>
+        <line num="139" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="146" count="1" type="stmt"/>
+        <line num="167" count="2" type="stmt"/>
+        <line num="170" count="1" type="stmt"/>
+        <line num="172" count="1" type="stmt"/>
+        <line num="175" count="1" type="stmt"/>
+        <line num="185" count="1" type="stmt"/>
+        <line num="187" count="1" type="stmt"/>
+        <line num="188" count="1" type="stmt"/>
+        <line num="196" count="0" type="stmt"/>
+        <line num="201" count="1" type="stmt"/>
+      </file>
+      <file name="ListItems.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/ListItems.js">
+        <metrics statements="67" coveredstatements="67" conditionals="31" coveredconditionals="31" methods="9" coveredmethods="9"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="38" count="3" type="stmt"/>
+        <line num="53" count="3" type="stmt"/>
+        <line num="58" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="62" count="2" type="stmt"/>
+        <line num="65" count="3" type="stmt"/>
+        <line num="79" count="3" type="stmt"/>
+        <line num="80" count="3" type="stmt"/>
+        <line num="85" count="2" type="stmt"/>
+        <line num="88" count="1" type="stmt"/>
+        <line num="89" count="1" type="stmt"/>
+        <line num="91" count="1" type="stmt"/>
+        <line num="103" count="1" type="stmt"/>
+        <line num="113" count="3" type="stmt"/>
+        <line num="119" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="120" count="1" type="stmt"/>
+        <line num="123" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="124" count="1" type="stmt"/>
+        <line num="130" count="1" type="stmt"/>
+        <line num="144" count="3" type="stmt"/>
+        <line num="150" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="151" count="1" type="stmt"/>
+        <line num="154" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="155" count="1" type="stmt"/>
+        <line num="161" count="1" type="stmt"/>
+        <line num="172" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="173" count="1" type="stmt"/>
+        <line num="179" count="4" type="stmt"/>
+        <line num="185" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="186" count="1" type="stmt"/>
+        <line num="189" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="190" count="1" type="stmt"/>
+        <line num="196" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="197" count="1" type="stmt"/>
+        <line num="203" count="1" type="stmt"/>
+        <line num="221" count="6" type="stmt"/>
+        <line num="222" count="6" type="stmt"/>
+        <line num="227" count="1" type="stmt"/>
+        <line num="230" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="231" count="1" type="stmt"/>
+        <line num="234" count="4" type="stmt"/>
+        <line num="240" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="241" count="1" type="stmt"/>
+        <line num="244" count="3" type="stmt"/>
+        <line num="245" count="3" type="stmt"/>
+        <line num="250" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="251" count="1" type="stmt"/>
+        <line num="256" count="2" type="stmt"/>
+        <line num="261" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="262" count="1" type="stmt"/>
+        <line num="267" count="1" type="stmt"/>
+        <line num="280" count="2" type="stmt"/>
+        <line num="287" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="288" count="1" type="stmt"/>
+        <line num="291" count="1" type="stmt"/>
+        <line num="302" count="2" type="stmt"/>
+        <line num="309" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="310" count="1" type="stmt"/>
+        <line num="313" count="1" type="stmt"/>
+        <line num="317" count="2" type="stmt"/>
+      </file>
+      <file name="ListMembers.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/ListMembers.js">
+        <metrics statements="19" coveredstatements="19" conditionals="9" coveredconditionals="9" methods="5" coveredmethods="5"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="25" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="42" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="62" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+        <line num="80" count="2" type="stmt"/>
+        <line num="93" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="94" count="1" type="stmt"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="101" count="6" type="stmt"/>
+        <line num="105" count="4" type="stmt"/>
+      </file>
+      <file name="ListPriorities.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/ListPriorities.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="20" count="7" type="stmt"/>
+        <line num="24" count="3" type="stmt"/>
+      </file>
+      <file name="Lists.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/Lists.js">
+        <metrics statements="31" coveredstatements="31" conditionals="11" coveredconditionals="11" methods="7" coveredmethods="7"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="34" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="54" count="4" type="stmt"/>
+        <line num="56" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="57" count="2" type="stmt"/>
+        <line num="60" count="4" type="stmt"/>
+        <line num="71" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="72" count="1" type="stmt"/>
+        <line num="78" count="3" type="stmt"/>
+        <line num="80" count="3" type="stmt"/>
+        <line num="89" count="1" type="stmt"/>
+        <line num="103" count="4" type="stmt"/>
+        <line num="104" count="4" type="stmt"/>
+        <line num="109" count="2" type="stmt"/>
+        <line num="113" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="114" count="1" type="stmt"/>
+        <line num="118" count="1" type="stmt"/>
+        <line num="132" count="2" type="stmt"/>
+        <line num="139" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="143" count="1" type="stmt"/>
+        <line num="153" count="2" type="stmt"/>
+        <line num="159" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="160" count="1" type="stmt"/>
+        <line num="163" count="1" type="stmt"/>
+        <line num="167" count="2" type="stmt"/>
+      </file>
+      <file name="UserProfileImages.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/UserProfileImages.js">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+        <line num="1" count="5" type="stmt"/>
+        <line num="2" count="5" type="stmt"/>
+        <line num="3" count="5" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="49" count="5" type="stmt"/>
+      </file>
+      <file name="Users.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/Users.js">
+        <metrics statements="52" coveredstatements="47" conditionals="16" coveredconditionals="13" methods="10" coveredmethods="9"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="9" count="4" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="27" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="46" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="68" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="72" count="1" type="stmt"/>
+        <line num="87" count="3" type="stmt"/>
+        <line num="90" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="91" count="1" type="stmt"/>
+        <line num="98" count="2" type="stmt"/>
+        <line num="99" count="2" type="stmt"/>
+        <line num="103" count="1" type="stmt"/>
+        <line num="117" count="3" type="stmt"/>
+        <line num="119" count="3" type="stmt"/>
+        <line num="120" count="3" type="stmt"/>
+        <line num="122" count="3" type="stmt"/>
+        <line num="123" count="3" type="stmt"/>
+        <line num="129" count="1" type="stmt"/>
+        <line num="133" count="2" type="stmt"/>
+        <line num="134" count="2" type="stmt"/>
+        <line num="142" count="1" type="stmt"/>
+        <line num="146" count="1" type="stmt"/>
+        <line num="160" count="1" type="stmt"/>
+        <line num="166" count="1" type="stmt"/>
+        <line num="167" count="3" type="stmt"/>
+        <line num="169" count="3" type="stmt"/>
+        <line num="191" count="2" type="stmt"/>
+        <line num="198" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="199" count="1" type="stmt"/>
+        <line num="205" count="1" type="stmt"/>
+        <line num="218" count="2" type="stmt"/>
+        <line num="220" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="221" count="1" type="stmt"/>
+        <line num="227" count="1" type="stmt"/>
+        <line num="237" count="1" type="stmt"/>
+        <line num="239" count="1" type="stmt"/>
+        <line num="249" count="2" type="stmt"/>
+        <line num="250" count="2" type="stmt"/>
+        <line num="252" count="1" type="stmt"/>
+        <line num="254" count="1" type="stmt"/>
+        <line num="259" count="4" type="stmt"/>
+      </file>
+    </package>
+    <package name="houselist-server.lib.EmailService">
+      <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <file name="EmailHtml.js" path="/Users/jamiecermak/Projects/personal/houselist-server/lib/EmailService/EmailHtml.js">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="houselist-server.middleware">
+      <metrics statements="90" coveredstatements="90" conditionals="32" coveredconditionals="29" methods="16" coveredmethods="16"/>
+      <file name="AppErrorHandler.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/AppErrorHandler.js">
+        <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="13" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="21" count="3" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+      </file>
+      <file name="ErrorHandler.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/ErrorHandler.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+      </file>
+      <file name="IsAuthorised.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/IsAuthorised.js">
+        <metrics statements="12" coveredstatements="12" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="15" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="19" count="4" type="stmt"/>
+        <line num="21" count="4" type="stmt"/>
+        <line num="22" count="4" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+      </file>
+      <file name="ListItemValidator.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/ListItemValidator.js">
+        <metrics statements="19" coveredstatements="19" conditionals="9" coveredconditionals="8" methods="3" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="14" count="4" type="stmt"/>
+        <line num="24" count="4" type="stmt"/>
+        <line num="25" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="27" count="4" type="stmt"/>
+        <line num="29" count="4" type="stmt"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="33" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="37" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="38" count="2" type="stmt"/>
+        <line num="43" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+      </file>
+      <file name="ListMemberValidator.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/ListMemberValidator.js">
+        <metrics statements="15" coveredstatements="15" conditionals="4" coveredconditionals="3" methods="3" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="32" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+      </file>
+      <file name="ListOwnerValidator.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/ListOwnerValidator.js">
+        <metrics statements="15" coveredstatements="15" conditionals="4" coveredconditionals="3" methods="3" coveredmethods="3"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="29" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
+      </file>
+      <file name="PathNotFoundHandler.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/PathNotFoundHandler.js">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+      </file>
+      <file name="PayloadValidator.js" path="/Users/jamiecermak/Projects/personal/houselist-server/middleware/PayloadValidator.js">
+        <metrics statements="14" coveredstatements="14" conditionals="11" coveredconditionals="11" methods="2" coveredmethods="2"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="11" count="17" type="stmt"/>
+        <line num="12" count="17" type="stmt"/>
+        <line num="13" count="17" type="stmt"/>
+        <line num="15" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="19" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="14" type="stmt"/>
+        <line num="23" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="15" type="stmt"/>
+        <line num="27" count="16" type="stmt"/>
+        <line num="32" count="14" type="stmt"/>
+        <line num="34" count="3" type="stmt"/>
+        <line num="44" count="4" type="stmt"/>
+      </file>
+    </package>
+    <package name="houselist-server.util">
+      <metrics statements="78" coveredstatements="69" conditionals="30" coveredconditionals="27" methods="19" coveredmethods="15"/>
+      <file name="APIResponses.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/APIResponses.js">
+        <metrics statements="20" coveredstatements="20" conditionals="11" coveredconditionals="11" methods="6" coveredmethods="6"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="5" count="13" type="stmt"/>
+        <line num="6" count="13" type="stmt"/>
+        <line num="7" count="13" type="stmt"/>
+        <line num="8" count="13" type="stmt"/>
+        <line num="11" count="13" type="stmt"/>
+        <line num="12" count="13" type="stmt"/>
+        <line num="13" count="13" type="stmt"/>
+        <line num="14" count="13" type="stmt"/>
+        <line num="18" count="10" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="33" count="4" type="stmt"/>
+        <line num="39" count="9" type="stmt"/>
+        <line num="43" count="7" type="stmt"/>
+        <line num="45" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="5" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="65" count="2" type="stmt"/>
+      </file>
+      <file name="AWS.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/AWS.js">
+        <metrics statements="7" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
+      </file>
+      <file name="Database.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/Database.js">
+        <metrics statements="9" coveredstatements="6" conditionals="4" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="1" count="15" type="stmt"/>
+        <line num="2" count="15" type="stmt"/>
+        <line num="5" count="15" type="cond" truecount="1" falsecount="3"/>
+        <line num="7" count="15" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="17" count="15" type="stmt"/>
+        <line num="19" count="15" type="stmt"/>
+      </file>
+      <file name="FirebaseApp.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/FirebaseApp.js">
+        <metrics statements="6" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+      </file>
+      <file name="Logger.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/Logger.js">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="17" type="stmt"/>
+        <line num="3" count="17" type="stmt"/>
+        <line num="16" count="17" type="stmt"/>
+      </file>
+      <file name="Secrets.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/Secrets.js">
+        <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="5" type="stmt"/>
+        <line num="2" count="5" type="stmt"/>
+        <line num="3" count="5" type="stmt"/>
+        <line num="4" count="5" type="stmt"/>
+        <line num="5" count="5" type="stmt"/>
+        <line num="6" count="5" type="stmt"/>
+        <line num="7" count="5" type="stmt"/>
+        <line num="8" count="5" type="stmt"/>
+        <line num="9" count="5" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
+        <line num="12" count="5" type="stmt"/>
+      </file>
+      <file name="ServerErrors.js" path="/Users/jamiecermak/Projects/personal/houselist-server/util/ServerErrors.js">
+        <metrics statements="22" coveredstatements="22" conditionals="15" coveredconditionals="15" methods="8" coveredmethods="8"/>
+        <line num="1" count="17" type="stmt"/>
+        <line num="4" count="66" type="stmt"/>
+        <line num="5" count="66" type="stmt"/>
+        <line num="6" count="66" type="stmt"/>
+        <line num="9" count="66" type="stmt"/>
+        <line num="11" count="66" type="stmt"/>
+        <line num="12" count="66" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="66" type="stmt"/>
+        <line num="17" count="3" type="stmt"/>
+        <line num="23" count="29" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="29" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="29" type="stmt"/>
+        <line num="36" count="10" type="stmt"/>
+        <line num="40" count="10" type="stmt"/>
+        <line num="50" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="52" count="7" type="stmt"/>
+        <line num="62" count="6" type="stmt"/>
+        <line num="68" count="4" type="stmt"/>
+        <line num="74" count="4" type="stmt"/>
+        <line num="81" count="4" type="stmt"/>
+        <line num="83" count="4" type="stmt"/>
+        <line num="87" count="17" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

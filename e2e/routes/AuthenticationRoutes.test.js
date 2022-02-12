@@ -22,7 +22,7 @@ describe('POST /auth/login', () => {
         return request(app)
             .post('/auth/login')
             .send({
-                username: 'johnsmith@example.com',
+                email_address: 'johnsmith@example.com',
                 password: 'password',
             })
             .then((res) => {
@@ -41,7 +41,7 @@ describe('POST /auth/login', () => {
         return request(app)
             .post('/auth/login')
             .send({
-                username: 'johnsmith@example.com',
+                email_address: 'johnsmith@example.com',
                 password: 'wrong-password',
             })
             .then((res) => {
@@ -60,7 +60,7 @@ describe('POST /auth/login', () => {
         return request(app)
             .post('/auth/login')
             .send({
-                username: 'test@example.com',
+                email_address: 'test@example.com',
             })
             .then((res) => {
                 expect(res.statusCode).not.toEqual(200)
@@ -141,7 +141,7 @@ describe('POST /auth/signup', () => {
                 })
 
                 return request(app).post('/auth/login').send({
-                    username: 'garry@example.com',
+                    email_address: 'garry@example.com',
                     password: 'some-password',
                 })
             })

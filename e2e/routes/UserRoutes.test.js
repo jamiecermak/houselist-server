@@ -86,7 +86,7 @@ describe('POST /user/change_password', () => {
                 return request(app)
                     .post('/auth/login')
                     .send({
-                        username: 'johnsmith@example.com',
+                        email_address: 'johnsmith@example.com',
                         password: 'new-password',
                     })
                     .then((res) => {
