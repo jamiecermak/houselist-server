@@ -1,17 +1,60 @@
-service: houselist-server
-frameworkVersion: 2
+service: houselist-server-${opt:stage}
+frameworkVersion: 3
 
 plugins:
     - serverless-dotenv-plugin
     - serverless-offline
 
+custom:
+    HL_STORAGE_S3_BUCKET: houselist-${opt:stage}-ugc
+
 provider:
     name: aws
     runtime: nodejs14.x
     lambdaHashingVersion: '20201221'
+    iam:
+        role:
+            statements:
+                - Effect: 'Allow'
+                  Action:
+                      - 's3:ListBucket'
+                  Resource:
+                      Fn::Join:
+                          - ''
+                          - - 'arn:aws:s3:::'
+                            - Ref: HouselistUGCBucket
+                - Effect: 'Allow'
+                  Action:
+                      - 's3:PutObject'
+                      - 's3:GetObject'
+                      - 's3:DeleteObject'
+                  Resource:
+                      Fn::Join:
+                          - ''
+                          - - 'arn:aws:s3:::'
+                            - Ref: HouselistUGCBucket
+                            - '/*'
 
 functions:
     api:
+        name: houselist-${opt:stage}-api
         handler: handler.handler
+        environment:
+            NODE_ENV: ${env:NODE_ENV}
+            HL_DB_CONNECTION_STRING: ${ssm:houselist-${opt:stage}-HL_DB_CONNECTION_STRING}
+            HL_ENABLE_SIGNUP: ${ssm:houselist-${opt:stage}-HL_ENABLE_SIGNUP}
+            HL_EXPO_SECRET: ${ssm:houselist-${opt:stage}-HL_EXPO_SECRET}
+            HL_FROM_EMAIL: ${ssm:houselist-${opt:stage}-HL_FROM_EMAIL}
+            HL_JWT_EXPIRY: ${ssm:houselist-${opt:stage}-HL_JWT_EXPIRY}
+            HL_JWT_SECRET: ${ssm:houselist-${opt:stage}-HL_JWT_SECRET}
+            HL_SENDINBLUE_API_KEY: ${ssm:houselist-${opt:stage}-HL_SENDINBLUE_API_KEY}
+            HL_STORAGE_S3_BUCKET: ${self:custom.HL_STORAGE_S3_BUCKET}
         events:
             - httpApi: '*'
+
+resources:
+    Resources:
+        HouselistUGCBucket:
+            Type: AWS::S3::Bucket
+            Properties:
+                BucketName: ${self:custom.HL_STORAGE_S3_BUCKET}
