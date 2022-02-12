@@ -13,7 +13,7 @@ phases:
             nodejs: 14
         commands:
             - npm install -g serverless
-            - npm install
+            - NODE_ENV=test npm install
     pre_build:
         on-failure: ABORT
         commands:
